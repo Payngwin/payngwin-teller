@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: Payngwin
+    version: 0.0.1
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payngwin
+    driver-class-name: org.postgresql.Driver
+    username: payngwin
+    password: payngwin
+  jpa:
+    datasource-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  flyway:
+    enabled: true
+  thymeleaf:
+    prefix: classpath:/mail/
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nnoukastephen@gmail.com
+    password: uqhdtcphhkalubum
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+api:
+  base: /api/v1
+ui:
+  host: https://payngwin.com
+jwt:
+  security:
+    client-id: bac9d28a2db5430984125afc1ff3a5f0
+    client-secret: payngwinteller12345678@1
+    access-token-validity-seconds: 3600
+    refresh-token-validity-seconds: 27600
+    signing-key: 1253c919643747eabd669253d983f7eb
+    token-endpoint: /oauth/token
+    resource-id: PayngwinTeller
+server:
+  port: ${PORT:8083}
