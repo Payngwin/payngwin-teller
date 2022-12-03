@@ -1,21 +1,26 @@
 package com.mungwin.payngwinteller.domain.model.account;
 
-import com.mungwin.payngwinteller.domain.model.BaseSerialEntityWithCreatorAudit;
+import com.mungwin.payngwinteller.domain.model.BaseSerialEntity;
 import com.mungwin.payngwinteller.domain.model.iam.utils.JsonBWrapper;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-public class Account extends BaseSerialEntityWithCreatorAudit {
+public class Account extends BaseSerialEntity {
     private Double currentBalance;
     private Double availableBalance;
     private Boolean isClosed = false;
     private Boolean isWithdrawalOpen = false;
     private String accountType;
+    private UUID userId;
+    private Instant createdAt;
+    private Instant updatedAt;
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private JsonBWrapper<List<BillingAddress>> billingAddresses = new JsonBWrapper<>(new ArrayList<>());
@@ -66,5 +71,29 @@ public class Account extends BaseSerialEntityWithCreatorAudit {
 
     public void setAccountType(String accountType) {
         this.accountType = accountType;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

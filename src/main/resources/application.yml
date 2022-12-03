@@ -14,7 +14,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   flyway:
-    enabled: true
+    enabled: false
   thymeleaf:
     prefix: classpath:/mail/
   mail:
