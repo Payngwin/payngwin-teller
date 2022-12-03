@@ -1,8 +1,9 @@
 package com.mungwin.payngwinteller.security.security.jwt;
 
 import com.mungwin.payngwinteller.domain.response.iam.JWTResponse;
-import com.mungwin.payngwinteller.security.exception.ApiException;
+import com.mungwin.payngwinteller.exception.ApiException;
 import com.mungwin.payngwinteller.security.props.ResourceServerProps;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
@@ -60,45 +61,33 @@ public class JwtService {
     public String encode(Map<String, Object> claimsMap, String signature) {
         return Jwts.builder().addClaims(claimsMap).signWith(SignatureAlgorithm.HS256, signature.getBytes()).compact();
     }
-    public JWTResponse encode(String userName, String principal, String  principalType, String[] scope) {
-        String jwt = Jwts.builder()
-                .claim("principal", principal)
+    public JWTResponse encode(String userName, String principal, String  principalType, String[] scope, Long duration) {
+        JwtBuilder jwtBuilder = Jwts.builder().claim("principal", principal)
                 .claim("principal_type", principalType)
                 .claim("scope", String.join(",", scope))
                 .setSubject(userName)
-                .setAudience(resourceServerProps.getResourceId())
-                .setExpiration(Date.from(Instant.now().plusSeconds(resourceServerProps.getAccessTokenValiditySeconds())))
-                .signWith(SignatureAlgorithm.HS256, resourceServerProps.getSigningKey().getBytes())
-                .compact();
-        String refresh = Jwts.builder()
-                .claim("principal", principal)
-                .claim("principal_type", principalType)
-                .claim("scope", String.join(",", scope))
-                .claim("is_refresh", true)
-                .setSubject(userName)
-                .setAudience(resourceServerProps.getResourceId())
-                .setExpiration(Date.from(Instant.now().plusSeconds(resourceServerProps.getRefreshTokenValiditySeconds())))
-                .signWith(SignatureAlgorithm.HS256, resourceServerProps.getSigningKey().getBytes())
-                .compact();
+                .setAudience(resourceServerProps.getResourceId());
+
         JWTResponse response = new JWTResponse();
+        if (duration > -1) {
+            jwtBuilder.setExpiration(Date.from(Instant.now().plusSeconds(duration)));
+            response.setExpiresInSeconds(duration);
+        }
+        String jwt = jwtBuilder
+                .signWith(SignatureAlgorithm.HS256, resourceServerProps.getSigningKey().getBytes())
+                .compact();
         response.setAccessToken(jwt);
-        response.setRefreshToken(refresh);
         response.setTokenType("bearer");
-        response.setExpiresIn(resourceServerProps.getAccessTokenValiditySeconds().longValue());
         return response;
     }
-    public JWTResponse refresh(String rToken) {
-        OAuthResponse response = decode(rToken);
-        if (response.isRefresh()) {
-            return encode(
-                    response.getEmail(), response.getPrincipal(), response.getPrincipalType(), response.getScopes()
-            );
-        }
-        throw ApiException.INVALID_REFRESH_TOKEN;
-    }
     public boolean isExpired(JSONObject payload) {
-        Instant exp = Instant.ofEpochSecond(payload.getLong("exp"));
-        return exp.isBefore(Instant.now());
+        try {
+            Instant exp = Instant.ofEpochSecond(payload.getLong("exp"));
+            return exp.isBefore(Instant.now());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }
     }
     public static class OAuthResponse {
         private String principal;

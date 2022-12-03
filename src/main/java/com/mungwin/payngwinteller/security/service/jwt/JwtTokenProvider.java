@@ -1,10 +1,9 @@
 package com.mungwin.payngwinteller.security.security.jwt;
 
-import com.mungwin.payngwinteller.domain.model.iam.App;
 import com.mungwin.payngwinteller.domain.model.iam.AppToken;
 import com.mungwin.payngwinteller.domain.repository.iam.AppTokenRepository;
-import com.mungwin.payngwinteller.security.exception.ApiException;
-import com.mungwin.payngwinteller.security.exception.Precondition;
+import com.mungwin.payngwinteller.exception.ApiException;
+import com.mungwin.payngwinteller.exception.Precondition;
 import com.mungwin.payngwinteller.security.props.ResourceServerProps;
 import com.mungwin.payngwinteller.security.security.AppDetailsService;
 import com.mungwin.payngwinteller.security.security.AppSecurityContextHolder;

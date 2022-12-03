@@ -4,7 +4,7 @@ package com.mungwin.payngwinteller.security.security;
 import com.mungwin.payngwinteller.domain.model.iam.App;
 import com.mungwin.payngwinteller.domain.model.iam.AppToken;
 import com.mungwin.payngwinteller.domain.model.iam.Role;
-import com.mungwin.payngwinteller.security.exception.ApiException;
+import com.mungwin.payngwinteller.exception.ApiException;
 
 public class AppSecurityContextHolder {
     private static final ThreadLocal<Principal> principal = new ThreadLocal<>();
