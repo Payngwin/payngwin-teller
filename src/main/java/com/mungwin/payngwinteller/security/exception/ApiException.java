@@ -5,14 +5,12 @@ import org.springframework.http.HttpStatus;
 
 @JsonIgnoreProperties({"stackTrace", "cause", "suppressed", "localizedMessage"})
 public class ApiException extends RuntimeException {
-    public static final ApiException USER_UNAUTHORIZED = new ApiException("U401",
-            "User is not authenticated", HttpStatus.UNAUTHORIZED);
-    public static final ApiException USER_ACCESS_DENIED = new ApiException("U403",
-            "Access is denied for this user", HttpStatus.FORBIDDEN);
+    public static final ApiException APP_UNAUTHORIZED = new ApiException("U401",
+            "App is not authenticated", HttpStatus.UNAUTHORIZED);
+    public static final ApiException APP_ACCESS_DENIED = new ApiException("U403",
+            "Access is denied for this app", HttpStatus.FORBIDDEN);
     public static final ApiException EMAIL_ALREADY_EXISTS = new ApiException("U422",
-            "User email already in use", HttpStatus.UNPROCESSABLE_ENTITY);
-    public static final ApiException PHONE_ALREADY_EXISTS = new ApiException("U422B",
-            "User phone already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+            "App email already in use", HttpStatus.UNPROCESSABLE_ENTITY);
     public static final ApiException DUPLICATE_ACCOUNT_NOT_ALLOWED = new ApiException("A409",
             "Duplicate account not allowed", HttpStatus.UNPROCESSABLE_ENTITY);
     public static final ApiException INVALID_TOKEN = new ApiException("T400",

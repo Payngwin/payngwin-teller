@@ -13,7 +13,7 @@ public class AppSecurityContextHolder {
 
     public static Principal getPrincipal() {
         if (principal.get() == null && failIfAbsent.get()) {
-            throw ApiException.USER_UNAUTHORIZED;
+            throw ApiException.APP_UNAUTHORIZED;
         }
         return principal.get();
     }
@@ -23,7 +23,7 @@ public class AppSecurityContextHolder {
 
     public static AppToken getToken() {
         if (token.get() == null && failIfAbsent.get()) {
-            throw ApiException.USER_UNAUTHORIZED;
+            throw ApiException.APP_UNAUTHORIZED;
         }
         return token.get();
     }

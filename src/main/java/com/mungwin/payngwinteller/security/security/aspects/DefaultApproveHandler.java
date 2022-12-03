@@ -40,10 +40,10 @@ public class DefaultApproveHandler implements HandlesApproval {
                 }
             }
             if (!isAllowed) {
-                throw ApiException.USER_ACCESS_DENIED;
+                throw ApiException.APP_ACCESS_DENIED;
             }
         } catch (NullPointerException e) {
-            throw ApiException.USER_UNAUTHORIZED;
+            throw ApiException.APP_UNAUTHORIZED;
         }
     }
 }
