@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.domain.model.account;
+package com.mungwin.payngwinteller.domain.model.payment;
 
 
 

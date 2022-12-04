@@ -31,6 +31,8 @@ public class ApiException extends RuntimeException {
             "Unsupported Media Type", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     public static final ApiException BAD_REQUEST_INPUTS = new ApiException("R422",
             "One or more inputs were invalid", HttpStatus.UNPROCESSABLE_ENTITY);
+    public static final ApiException EXTERNAL_ID_NOT_UNIQUE = new ApiException(
+            "E422", "externalId must be unique accross account and tags", HttpStatus.UNPROCESSABLE_ENTITY);
 
     private String code;
     private final StringBuilder details = new StringBuilder();

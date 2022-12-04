@@ -8,6 +8,7 @@ import java.util.*;
 
 public class RoleDefaults {
     // unique role ids, should be the same across app instances and deployments
+    private static final String APP_ID = "c55bc06a-caa7-4d2b-99a6-160a725af42e";
     private static final String USER_ID = "7591f132-6068-4565-9c5d-660036999f58";
     private static final String MERCHANT_ID = "a24413cc-140d-4428-a16e-b3dfe5208e5d";
     private static final String ADMIN_ID = "351824d8-83fc-486b-8cfa-2e034eaf406b";
@@ -23,6 +24,7 @@ public class RoleDefaults {
         return Optional.empty();
     }
     // expose roles here
+    public static final Role APP = repository.get(APP_ID);
     public static final Role USER = repository.get(USER_ID);
     public static final Role MERCHANT = repository.get(MERCHANT_ID);
     public static final Role ADMIN = repository.get(ADMIN_ID);
@@ -38,8 +40,9 @@ public class RoleDefaults {
     }
     private static Map<String, Role> buildRepository() {
         Map<String, Role> repository = new HashMap<>();
+        repository.put(APP_ID, generate(APP_ID, "APP", Arrays.asList(ACL.APP), "default app role"));
         repository.put(USER_ID, generate(USER_ID, "USER",
-                Arrays.asList(ACL.USER), "default user role"));
+                Arrays.asList(ACL.APP), "default user role"));
         repository.put(MERCHANT_ID, generate(MERCHANT_ID, "MERCHANT",
                 Arrays.asList(ACL.MERCHANT), "default supplier role"));
         repository.put(ADMIN_ID, generate(ADMIN_ID, "ADMIN",

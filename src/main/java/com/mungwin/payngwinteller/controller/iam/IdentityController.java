@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.controller;
+package com.mungwin.payngwinteller.controller.iam;
 
 import com.mungwin.payngwinteller.domain.request.iam.LoginRequest;
 import com.mungwin.payngwinteller.domain.response.ApiResponse;

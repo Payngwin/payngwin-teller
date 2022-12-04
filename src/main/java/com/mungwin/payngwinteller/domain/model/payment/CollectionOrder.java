@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.domain.model.account;
+package com.mungwin.payngwinteller.domain.model.payment;
 
 
 import com.mungwin.payngwinteller.domain.model.BaseSerialEntity;
@@ -52,6 +52,8 @@ public class CollectionOrder extends BaseSerialEntity {
     private Boolean captureMode;
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
+    @Column(name = "account_id")
+    private Long accountId;
 
     public String getToken() {
         return token;
@@ -149,19 +151,19 @@ public class CollectionOrder extends BaseSerialEntity {
         this.payRequest = payRequest;
     }
 
-    public String getoComment() {
+    public String getOComment() {
         return oComment;
     }
 
-    public void setoComment(String oComment) {
+    public void setOComment(String oComment) {
         this.oComment = oComment;
     }
 
-    public String getoSource() {
+    public String getOSource() {
         return oSource;
     }
 
-    public void setoSource(String oSource) {
+    public void setOSource(String oSource) {
         this.oSource = oSource;
     }
 
@@ -243,5 +245,13 @@ public class CollectionOrder extends BaseSerialEntity {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 }
