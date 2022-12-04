@@ -31,7 +31,7 @@ spring:
 api:
   base: /api/v1
 ui:
-  host: https://payngwin.com
+  host: https://payngwin.herokuapp.com
 jwt:
   security:
     client-id: bac9d28a2db5430984125afc1ff3a5f0
