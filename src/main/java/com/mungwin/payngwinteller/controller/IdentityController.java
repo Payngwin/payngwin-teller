@@ -1,9 +1,9 @@
 package com.mungwin.payngwinteller.controller;
 
-import com.mungwin.payngwinteller.domain.request.iam.LoginUserRequest;
+import com.mungwin.payngwinteller.domain.request.iam.LoginRequest;
 import com.mungwin.payngwinteller.domain.response.ApiResponse;
 import com.mungwin.payngwinteller.domain.response.iam.JWTResponse;
-import com.mungwin.payngwinteller.security.security.AppSecurityContextHolder;
+import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import com.mungwin.payngwinteller.service.IdentityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +23,9 @@ public class IdentityController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<JWTResponse>> login(@RequestBody @Valid LoginUserRequest body) {
+    public ResponseEntity<ApiResponse<JWTResponse>> login(@RequestBody @Valid LoginRequest body) {
         AppSecurityContextHolder.setFailIfAbsent(false);
-        return ResponseEntity.ok(ApiResponse.from(identityService.login(body.getEmail(), body.getPassword())));
+        return ResponseEntity.ok(ApiResponse.from(
+                identityService.login(body.getEmail(), body.getPassword(), body.getDurationInSeconds())));
     }
 }

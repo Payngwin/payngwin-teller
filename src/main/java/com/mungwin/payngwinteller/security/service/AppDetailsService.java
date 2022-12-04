@@ -1,9 +1,8 @@
-package com.mungwin.payngwinteller.security.security;
+package com.mungwin.payngwinteller.security.service;
 
 import com.mungwin.payngwinteller.domain.model.iam.App;
 import com.mungwin.payngwinteller.domain.model.iam.Role;
 import com.mungwin.payngwinteller.domain.repository.iam.AppRepository;
-import com.mungwin.payngwinteller.domain.repository.iam.RoleRepository;
 import com.mungwin.payngwinteller.security.contstants.RoleDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

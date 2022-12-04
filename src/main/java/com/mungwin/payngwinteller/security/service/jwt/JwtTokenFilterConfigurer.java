@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.security.security.jwt;
+package com.mungwin.payngwinteller.security.service.jwt;
 
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

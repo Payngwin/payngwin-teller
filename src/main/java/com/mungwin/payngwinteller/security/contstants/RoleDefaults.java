@@ -2,7 +2,7 @@ package com.mungwin.payngwinteller.security.contstants;
 
 
 import com.mungwin.payngwinteller.domain.model.iam.Role;
-import com.mungwin.payngwinteller.security.security.ACL;
+import com.mungwin.payngwinteller.security.service.ACL;
 
 import java.util.*;
 

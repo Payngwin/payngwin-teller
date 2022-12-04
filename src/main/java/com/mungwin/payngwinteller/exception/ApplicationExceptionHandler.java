@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.security.exception;
+package com.mungwin.payngwinteller.exception;
 
 import com.mungwin.payngwinteller.domain.response.ApiResponse;
 import org.slf4j.Logger;
@@ -49,6 +49,7 @@ public class ApplicationExceptionHandler {
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setCode("UNDOCUMENTED");
         response.getErrors().add(errorResponse);
+        ex.printStackTrace();
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

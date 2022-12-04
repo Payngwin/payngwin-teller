@@ -1,8 +1,8 @@
-package com.mungwin.payngwinteller.security.security.aspects;
+package com.mungwin.payngwinteller.security.service.aspects;
 
 
 import com.mungwin.payngwinteller.exception.ApiException;
-import com.mungwin.payngwinteller.security.security.AppSecurityContextHolder;
+import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 
 import java.util.List;
 import java.util.stream.Collectors;

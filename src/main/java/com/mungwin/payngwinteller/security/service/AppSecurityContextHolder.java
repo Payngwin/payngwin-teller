@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.security.security;
+package com.mungwin.payngwinteller.security.service;
 
 
 import com.mungwin.payngwinteller.domain.model.iam.App;

@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.security.security.aspects;
+package com.mungwin.payngwinteller.security.service.aspects;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

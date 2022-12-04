@@ -4,7 +4,7 @@ public class JWTResponse {
     private String accessToken;
     private String tokenType;
     private String refreshToken;
-    private Long expiresIn;
+    private Long expiresInSeconds;
 
     public String getAccessToken() {
         return accessToken;
@@ -30,11 +30,11 @@ public class JWTResponse {
         this.refreshToken = refreshToken;
     }
 
-    public Long getExpiresIn() {
-        return expiresIn;
+    public Long getExpiresInSeconds() {
+        return expiresInSeconds;
     }
 
-    public void setExpiresIn(Long expiresIn) {
-        this.expiresIn = expiresIn;
+    public void setExpiresInSeconds(Long expiresInSeconds) {
+        this.expiresInSeconds = expiresInSeconds;
     }
 }

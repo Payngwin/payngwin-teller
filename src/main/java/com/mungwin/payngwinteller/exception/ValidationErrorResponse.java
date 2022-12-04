@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.security.exception;
+package com.mungwin.payngwinteller.exception;
 
 public class ValidationErrorResponse extends ErrorResponse {
     private String field;

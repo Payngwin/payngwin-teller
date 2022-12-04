@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.security.exception;
+package com.mungwin.payngwinteller.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.HttpStatus;

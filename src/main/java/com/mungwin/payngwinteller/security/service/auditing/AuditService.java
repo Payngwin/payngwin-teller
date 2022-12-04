@@ -1,6 +1,6 @@
-package com.mungwin.payngwinteller.security.security.auditing;
+package com.mungwin.payngwinteller.security.service.auditing;
 
-import com.mungwin.payngwinteller.security.security.AppSecurityContextHolder;
+import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import org.springframework.data.domain.AuditorAware;
 
 import java.util.Optional;

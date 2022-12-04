@@ -1,8 +1,8 @@
 package com.mungwin.payngwinteller.config;
 
 import com.mungwin.payngwinteller.security.logs.interceptors.LogActivityContextInterceptor;
-import com.mungwin.payngwinteller.security.security.auditing.AuditService;
-import com.mungwin.payngwinteller.security.security.interceptors.FlushSecurityContextInterceptor;
+import com.mungwin.payngwinteller.security.service.auditing.AuditService;
+import com.mungwin.payngwinteller.security.service.interceptors.FlushSecurityContextInterceptor;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;

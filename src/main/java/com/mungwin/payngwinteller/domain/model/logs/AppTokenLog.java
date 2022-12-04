@@ -1,15 +1,17 @@
 package com.mungwin.payngwinteller.domain.model.logs;
 
 
-import com.mungwin.payngwinteller.domain.model.BaseEntityWithBasicAudit;
+import com.mungwin.payngwinteller.domain.model.BaseSerialEntityWithBasicAudit;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "app_token_log")
-public class AppTokenLog extends BaseEntityWithBasicAudit {
+public class AppTokenLog extends BaseSerialEntityWithBasicAudit {
     private String userAgent;
     private String ipAddress;
     private String endPoint;
@@ -18,6 +20,8 @@ public class AppTokenLog extends BaseEntityWithBasicAudit {
     private String queryString;
     private UUID appId;
     private UUID tokenId;
+    @Column(name = "token_created_at")
+    private Instant tokenCreatedAt;
 
     public String getUserAgent() {
         return userAgent;
@@ -81,5 +85,13 @@ public class AppTokenLog extends BaseEntityWithBasicAudit {
 
     public void setTokenId(UUID tokenId) {
         this.tokenId = tokenId;
+    }
+
+    public Instant getTokenCreatedAt() {
+        return tokenCreatedAt;
+    }
+
+    public void setTokenCreatedAt(Instant tokenCreatedAt) {
+        this.tokenCreatedAt = tokenCreatedAt;
     }
 }

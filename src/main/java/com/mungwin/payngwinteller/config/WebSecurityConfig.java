@@ -1,7 +1,7 @@
 package com.mungwin.payngwinteller.config;
 
-import com.mungwin.payngwinteller.security.security.jwt.JwtTokenFilterConfigurer;
-import com.mungwin.payngwinteller.security.security.jwt.JwtTokenProvider;
+import com.mungwin.payngwinteller.security.service.jwt.JwtTokenFilterConfigurer;
+import com.mungwin.payngwinteller.security.service.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

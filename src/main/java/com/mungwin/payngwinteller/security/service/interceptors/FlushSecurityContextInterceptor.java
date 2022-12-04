@@ -1,6 +1,6 @@
-package com.mungwin.payngwinteller.security.security.interceptors;
+package com.mungwin.payngwinteller.security.service.interceptors;
 
-import com.mungwin.payngwinteller.security.security.AppSecurityContextHolder;
+import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

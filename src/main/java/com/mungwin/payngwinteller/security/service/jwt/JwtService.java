@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.security.security.jwt;
+package com.mungwin.payngwinteller.security.service.jwt;
 
 import com.mungwin.payngwinteller.domain.response.iam.JWTResponse;
 import com.mungwin.payngwinteller.exception.ApiException;

@@ -1,12 +1,12 @@
-package com.mungwin.payngwinteller.security.security.jwt;
+package com.mungwin.payngwinteller.security.service.jwt;
 
 import com.mungwin.payngwinteller.domain.model.iam.AppToken;
 import com.mungwin.payngwinteller.domain.repository.iam.AppTokenRepository;
 import com.mungwin.payngwinteller.exception.ApiException;
 import com.mungwin.payngwinteller.exception.Precondition;
 import com.mungwin.payngwinteller.security.props.ResourceServerProps;
-import com.mungwin.payngwinteller.security.security.AppDetailsService;
-import com.mungwin.payngwinteller.security.security.AppSecurityContextHolder;
+import com.mungwin.payngwinteller.security.service.AppDetailsService;
+import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

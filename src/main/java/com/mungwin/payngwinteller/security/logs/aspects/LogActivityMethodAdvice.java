@@ -5,7 +5,7 @@ import com.mungwin.payngwinteller.domain.model.iam.AppToken;
 import com.mungwin.payngwinteller.domain.model.logs.AppTokenLog;
 import com.mungwin.payngwinteller.domain.repository.logs.AppTokenLogRepository;
 import com.mungwin.payngwinteller.security.logs.LogActivityContextHolder;
-import com.mungwin.payngwinteller.security.security.AppSecurityContextHolder;
+import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -36,6 +36,7 @@ public class LogActivityMethodAdvice {
         activityLog.setTag(tag);
         activityLog.setAppId(token.getAppId());
         activityLog.setTokenId(token.getId());
+        activityLog.setTokenCreatedAt(token.getCreatedAt());
         activityLogRepository.save(activityLog);
         logger.info("saved activity log: {} for user {}", activityLog.getId(), activityLog.getAppId());
     }
