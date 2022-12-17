@@ -3,6 +3,7 @@ package com.mungwin.payngwinteller.controller.payment;
 import com.mungwin.payngwinteller.domain.request.payment.InitCollectionRequest;
 import com.mungwin.payngwinteller.domain.response.ApiResponse;
 import com.mungwin.payngwinteller.domain.response.payment.InitCollectionResponse;
+import com.mungwin.payngwinteller.security.logs.aspects.LogActivity;
 import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import com.mungwin.payngwinteller.service.CollectionService;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class CollectionController {
     }
 
     @PostMapping("/init")
+    @LogActivity("payment.order.create")
     public ResponseEntity<ApiResponse<InitCollectionResponse>> initCollection(@RequestBody @Valid InitCollectionRequest body){
         return ResponseEntity.ok(ApiResponse.from(collectionService.initCollection(
                 AppSecurityContextHolder.getPrincipal().getUser(), body.getAmount(), body.getCurrency(),
