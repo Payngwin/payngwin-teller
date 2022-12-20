@@ -1,5 +1,7 @@
 package com.mungwin.payngwinteller.network.payment.clients.mtn;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.mungwin.payngwinteller.constant.CacheKey;
 import com.mungwin.payngwinteller.exception.ApiException;
 import com.mungwin.payngwinteller.network.payment.RestResource;
 import com.mungwin.payngwinteller.network.payment.dto.mtn.*;
@@ -19,31 +21,40 @@ public class MoMoRestClient extends RestResource {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final RestTemplate restTemplate;
     private final MoMoProps moMoProps;
+    private final Cache<String, MoMoTokenDTO> tokenCache;
 
     @Autowired
-    public MoMoRestClient(@Qualifier("paymentRestTemplate") RestTemplate restTemplate, MoMoProps moMoProps) {
+    public MoMoRestClient(
+            @Qualifier("paymentRestTemplate") RestTemplate restTemplate,
+            MoMoProps moMoProps,
+            @Qualifier("hourCaffeineCache") Cache<String, MoMoTokenDTO> tokenCache) {
         this.restTemplate = restTemplate;
         this.moMoProps = moMoProps;
+        this.tokenCache = tokenCache;
     }
     public MoMoTokenDTO login() {
-        try {
-            HttpHeaders headers = Util.createBasicAuthHeader(moMoProps.getCollectionApiUserId(),
-                    moMoProps.getCollectionApiUserKey());
-            headers.set("Ocp-Apim-Subscription-Key", moMoProps.getCollectionPrimaryKey());
-            HttpEntity<Object> request = new HttpEntity<>(headers);
-            ResponseEntity<MoMoTokenDTO> entity = restTemplate.postForEntity(
-                    prepareRequestUri(moMoProps.getCollectionHost() + moMoProps.getCollectionTokenEndpoint()),
+        MoMoTokenDTO tokenDTO = tokenCache.getIfPresent(CacheKey.MOMO_TOKEN);
+        if (tokenDTO == null) {
+            try {
+                HttpHeaders headers = Util.createBasicAuthHeader(moMoProps.getCollectionApiUserId(),
+                        moMoProps.getCollectionApiUserKey());
+                headers.set("Ocp-Apim-Subscription-Key", moMoProps.getCollectionPrimaryKey());
+                HttpEntity<Object> request = new HttpEntity<>(headers);
+                ResponseEntity<MoMoTokenDTO> entity = restTemplate.postForEntity(
+                        prepareRequestUri(moMoProps.getCollectionHost() + moMoProps.getCollectionTokenEndpoint()),
                         request, MoMoTokenDTO.class
-                    );
-            if (entity.getStatusCode() == HttpStatus.OK) {
-                return entity.getBody();
-            } else {
-                handleResponseStatus(entity.getStatusCode());
+                );
+                if (entity.getStatusCode() == HttpStatus.OK) {
+                    tokenDTO = entity.getBody();
+                    tokenCache.put(CacheKey.MOMO_TOKEN, tokenDTO);
+                } else {
+                    handleResponseStatus(entity.getStatusCode());
+                }
+            } catch (RestClientResponseException httpEx) {
+                httpEx.printStackTrace();
             }
-        } catch (RestClientResponseException httpEx) {
-            httpEx.printStackTrace();
         }
-        throw ApiException.UNDOCUMENTED_ERROR;
+        return tokenDTO;
     }
     public Boolean requestToPay(MoMoPayRequest moMoPayRequest, String referenceId, String accessToken) {
         try {
@@ -104,7 +115,7 @@ public class MoMoRestClient extends RestResource {
         try {
             // slack 20s
             if (init) {
-                Thread.sleep(90000);
+                Thread.sleep(120000);
             }
             // peek
             MoMoPayResponse payResponse = peekForPayStatus(referenceId, authToken);
