@@ -12,6 +12,6 @@ public class FlushSecurityContextInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler, Exception ex) throws Exception {
-        AppSecurityContextHolder.clearPrincipal();
+        AppSecurityContextHolder.flushContext();
     }
 }

@@ -14,6 +14,7 @@ public class ResourceServerProps {
     private String host;
     private String tokenEndpoint;
     private String resourceId;
+    private String consoleId;
 
     public String getClientId() {
         return clientId;
@@ -77,5 +78,13 @@ public class ResourceServerProps {
 
     public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
+    }
+
+    public String getConsoleId() {
+        return consoleId;
+    }
+
+    public void setConsoleId(String consoleId) {
+        this.consoleId = consoleId;
     }
 }

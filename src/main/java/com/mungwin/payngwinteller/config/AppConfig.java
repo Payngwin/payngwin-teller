@@ -1,11 +1,14 @@
 package com.mungwin.payngwinteller.config;
 
 import com.mungwin.payngwinteller.security.logs.interceptors.LogActivityContextInterceptor;
+import com.mungwin.payngwinteller.security.props.ResourceServerProps;
 import com.mungwin.payngwinteller.security.service.auditing.AuditService;
 import com.mungwin.payngwinteller.security.service.interceptors.FlushSecurityContextInterceptor;
+import com.mungwin.payngwinteller.security.service.interceptors.PortalContextInterceptor;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.ConfigurableWebServerFactory;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -33,6 +36,13 @@ import java.util.UUID;
 @EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class AppConfig implements WebMvcConfigurer {
+    private ResourceServerProps resourceServerProps;
+
+    @Autowired
+    public void setResourceServerProps(ResourceServerProps resourceServerProps) {
+        this.resourceServerProps = resourceServerProps;
+    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE");
@@ -40,6 +50,8 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new PortalContextInterceptor(resourceServerProps))
+                .addPathPatterns("/api/**/public/console/**");
         registry.addInterceptor(new FlushSecurityContextInterceptor());
         registry.addInterceptor(new LogActivityContextInterceptor());
     }

@@ -17,15 +17,9 @@ import javax.validation.Valid;
 @RequestMapping("${api.base}/public/iam")
 public class IdentityController {
     private final IdentityService identityService;
-    private MoMoRestClient moMoRestClient;
 
     public IdentityController(IdentityService identityService) {
         this.identityService = identityService;
-    }
-
-    @Autowired
-    public void setMoMoRestClient(MoMoRestClient moMoRestClient) {
-        this.moMoRestClient = moMoRestClient;
     }
 
     @PostMapping("/login")
@@ -33,9 +27,5 @@ public class IdentityController {
         AppSecurityContextHolder.setFailIfAbsent(false);
         return ResponseEntity.ok(ApiResponse.from(
                 identityService.login(body.getEmail(), body.getPassword(), body.getDurationInSeconds())));
-    }
-    @GetMapping("/test/momo")
-    public ResponseEntity<ApiResponse<MoMoTokenDTO>> testMomoLogin() {
-        return ResponseEntity.ok(ApiResponse.from(moMoRestClient.login()));
     }
 }

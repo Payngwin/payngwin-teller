@@ -41,6 +41,7 @@ jwt:
     signing-key: 1253c919643747eabd669253d983f7eb
     token-endpoint: /oauth/token
     resource-id: PayngwinTeller
+    console-id: bac954psa2dp09)(84125afc1ff3a+
 ## MOMO
 #momo.collection-primary-key=2baa4917168f42cdb2a017991bd2aff9
 # prod

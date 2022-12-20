@@ -9,6 +9,7 @@ import com.mungwin.payngwinteller.exception.ApiException;
 public class AppSecurityContextHolder {
     private static final ThreadLocal<Principal> principal = new ThreadLocal<>();
     private static final ThreadLocal<AppToken>  token = new ThreadLocal<>();
+    private static final ThreadLocal<String> consoleId = new ThreadLocal<>();
     private static final ThreadLocal<Boolean> failIfAbsent = ThreadLocal.withInitial(() -> true);
 
     public static Principal getPrincipal() {
@@ -32,6 +33,15 @@ public class AppSecurityContextHolder {
         AppSecurityContextHolder.token.set(token);
     }
 
+    public static String getConsoleId() {
+        if (consoleId.get() == null) throw ApiException.INVALID_RESOURCE_ID;
+        return consoleId.get();
+    }
+
+    public static void setConsoleId(String consoleId) {
+        AppSecurityContextHolder.consoleId.set(consoleId);
+    }
+
     public static boolean shouldFailIfAbsent() {
         return failIfAbsent.get();
     }
@@ -39,10 +49,11 @@ public class AppSecurityContextHolder {
         AppSecurityContextHolder.failIfAbsent.set(failIfAbsent);
     }
 
-    public static void clearPrincipal() {
+    public static void flushContext() {
         AppSecurityContextHolder.principal.remove();
         AppSecurityContextHolder.failIfAbsent.remove();
         AppSecurityContextHolder.token.remove();
+        AppSecurityContextHolder.consoleId.remove();
     }
     public static class Principal {
         private App user;

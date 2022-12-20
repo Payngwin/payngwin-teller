@@ -60,7 +60,6 @@ public class MoMoRestClient extends RestResource {
         try {
             HttpHeaders headers = createBearerAuthHeader(accessToken);
             headers.set("Ocp-Apim-Subscription-Key", moMoProps.getCollectionPrimaryKey());
-//            headers.set("X-Callback-Url", HttpUtils.getBaseUrl() + moMoProps.getCollectionCallbackUrl());
             headers.set("X-Reference-Id", referenceId);
             headers.set("X-Target-Environment", MoMoProps.getEnvironment(moMoProps.getCollectionHost()));
             headers.set("Content-Type", MediaType.APPLICATION_JSON_VALUE);
