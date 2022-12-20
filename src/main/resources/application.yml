@@ -41,5 +41,43 @@ jwt:
     signing-key: 1253c919643747eabd669253d983f7eb
     token-endpoint: /oauth/token
     resource-id: PayngwinTeller
+## MOMO
+#momo.collection-primary-key=2baa4917168f42cdb2a017991bd2aff9
+# prod
+momo:
+  collection-primary-key: a376aa7dc8c443008be415397607d111
+#momo.collection-secondary-key=6a247285e17a412daaaf5e86781269a5
+  collection-secondary-key: aadca16efcf0477db19fc59081b5b65a
+#momo.collection-api-user-id=d6eaf33a-f5b7-11e9-bb3c-f0761c28f8b2
+#momo.collection-api-user-id=a84670e4-bf67-4b98-b0c1-440afdcb0314
+  collection-api-user-id: f9336b70-150f-4b5c-8860-1e6d439a316c
+#momo.collection-api-user-key=bd70005257804c2e9bd9565d95a64b8f
+#momo.collection-api-user-key=f8d33eb22c34413d9036838b69f129c8
+  collection-api-user-key: dba983ce66524914b40336d5d860944d
+#momo.collection-host=https://sandbox.momodeveloper.mtn.com/collection
+  collection-host: https://proxy.momoapi.mtn.com/collection
+  collection-token-endpoint: /token/
+  collection-request-to-pay-endpoint: /v1_0/requesttopay
+  collection-callback-url: /api/public/collection/momo/callback
+
+## OM
+om:
+  consumer-key: 16fN9QWpjGIsaAPCzBqBdZSdMvca
+  consumer-secret: tBPC5nxiMf_pNCdYAYP0L10kTvEa
+  token-endpoint: https://api-s1.orange.cm/token
+  api-host: https://api-s1.orange.cm/omcoreapis/1.0.2
+  api-username: JONALEPAYPROD
+  api-password: JONALEPAYPROD2020
+  channel-user-msisdn: 697936799
+  pin: 3526
+  mp-init-endpoint: ${om.api-host}/mp/init
+  mp-status-endpoint: ${om.api-host}/mp/paymentstatus
+  mp-push-endpoint: ${om.api-host}/mp/push
+  mp-process-pay-endpoint: ${om.api-host}/mp/pay
+  cash-out: cashin
+  cash-out-init-endpoint: ${om.api-host}/${om.cash-out}/init
+  cash-out-status-endpoint: ${om.api-host}/${om.cash-out}/paymentstatus
+  cash-out-push-endpoint: ${om.api-host}/${om.cash-out}/push
+  process-cash-out-endpoint: ${om.api-host}/${om.cash-out}/pay
 server:
   port: ${PORT:8083}

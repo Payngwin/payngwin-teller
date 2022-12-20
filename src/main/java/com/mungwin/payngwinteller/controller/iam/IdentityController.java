@@ -3,13 +3,13 @@ package com.mungwin.payngwinteller.controller.iam;
 import com.mungwin.payngwinteller.domain.request.iam.LoginRequest;
 import com.mungwin.payngwinteller.domain.response.ApiResponse;
 import com.mungwin.payngwinteller.domain.response.iam.JWTResponse;
+import com.mungwin.payngwinteller.network.payment.clients.mtn.MoMoRestClient;
+import com.mungwin.payngwinteller.network.payment.dto.mtn.MoMoTokenDTO;
 import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import com.mungwin.payngwinteller.service.IdentityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -17,9 +17,15 @@ import javax.validation.Valid;
 @RequestMapping("${api.base}/public/iam")
 public class IdentityController {
     private final IdentityService identityService;
+    private MoMoRestClient moMoRestClient;
 
     public IdentityController(IdentityService identityService) {
         this.identityService = identityService;
+    }
+
+    @Autowired
+    public void setMoMoRestClient(MoMoRestClient moMoRestClient) {
+        this.moMoRestClient = moMoRestClient;
     }
 
     @PostMapping("/login")
@@ -27,5 +33,9 @@ public class IdentityController {
         AppSecurityContextHolder.setFailIfAbsent(false);
         return ResponseEntity.ok(ApiResponse.from(
                 identityService.login(body.getEmail(), body.getPassword(), body.getDurationInSeconds())));
+    }
+    @GetMapping("/test/momo")
+    public ResponseEntity<ApiResponse<MoMoTokenDTO>> testMomoLogin() {
+        return ResponseEntity.ok(ApiResponse.from(moMoRestClient.login()));
     }
 }

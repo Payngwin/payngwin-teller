@@ -13,4 +13,5 @@ public enum TransactionStatuses {
     INITIALIZED,
     REJECTED,
     FAILED,
+    FORWARDED,
 }

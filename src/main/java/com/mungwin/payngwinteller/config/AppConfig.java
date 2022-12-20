@@ -21,6 +21,12 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 @Configuration
@@ -48,6 +54,58 @@ public class AppConfig implements WebMvcConfigurer {
                 .setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
         HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
         httpRequestFactory.setHttpClient(httpClient);
+        return new RestTemplate(httpRequestFactory);
+    }
+    @Bean(name = "paymentRestTemplate")
+    public RestTemplate paymentRestTemplate() throws NoSuchAlgorithmException, KeyManagementException {
+        int timeout = 240000;
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    public void checkClientTrusted(
+                            X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                            X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+        SSLContext sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setSslcontext(sslContext)
+                .setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setHttpClient(httpClient);
+        httpRequestFactory.setConnectTimeout(timeout);
+        return new RestTemplate(httpRequestFactory);
+    }
+    @Bean(name = "callbackRestTemplate")
+    public RestTemplate callbackRestTemplate() throws NoSuchAlgorithmException, KeyManagementException {
+        int timeout = 180000;
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    public void checkClientTrusted(
+                            X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                            X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+        SSLContext sslContext = SSLContext.getInstance("SSL");
+        sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setSslcontext(sslContext)
+                .setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setHttpClient(httpClient);
+        httpRequestFactory.setConnectTimeout(timeout);
         return new RestTemplate(httpRequestFactory);
     }
     @Bean

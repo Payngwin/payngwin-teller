@@ -33,7 +33,8 @@ public class ApiException extends RuntimeException {
             "One or more inputs were invalid", HttpStatus.UNPROCESSABLE_ENTITY);
     public static final ApiException EXTERNAL_ID_NOT_UNIQUE = new ApiException(
             "E422", "externalId must be unique accross account and tags", HttpStatus.UNPROCESSABLE_ENTITY);
-
+    public static final ApiException UNDOCUMENTED_ERROR = new ApiException("E500",
+            "Undocumented error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     private String code;
     private final StringBuilder details = new StringBuilder();
     private HttpStatus status;
