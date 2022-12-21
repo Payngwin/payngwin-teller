@@ -35,6 +35,8 @@ public class PaymentTransaction extends BaseEntity {
     private Instant createdAt = Instant.now();
     @Column(name = "updated_at")
     private Instant updatedAt = Instant.now();
+    @Column(name = "order_id")
+    private Long orderId;
 
     public Double getAmount() {
         return amount;
@@ -138,5 +140,13 @@ public class PaymentTransaction extends BaseEntity {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 }

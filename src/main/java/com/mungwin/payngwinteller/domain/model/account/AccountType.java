@@ -8,6 +8,7 @@ public class AccountType {
     public static final String CHECKING = "account.checking";
     public static final String SAVINGS = "account.savings";
     public static final String CERTIFICATE_OF_DEPOSIT = "account.certificate_of_deposit";
+    public static final String UTILITY = "account.utility";
     @Id
     private String id;
     private Boolean isPayingInterest;

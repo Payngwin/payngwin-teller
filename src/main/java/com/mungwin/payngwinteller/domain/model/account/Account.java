@@ -21,6 +21,7 @@ public class Account extends BaseSerialEntity {
     private UUID userId;
     private Instant createdAt;
     private Instant updatedAt;
+    private String name;
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private JsonBWrapper<List<BillingAddress>> billingAddresses = new JsonBWrapper<>(new ArrayList<>());
@@ -95,5 +96,13 @@ public class Account extends BaseSerialEntity {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
