@@ -4,6 +4,7 @@ import com.mungwin.payngwinteller.constant.PaymentCharges;
 import com.mungwin.payngwinteller.constant.TransactionStatuses;
 import com.mungwin.payngwinteller.domain.model.account.Account;
 import com.mungwin.payngwinteller.domain.model.account.AccountBalanceHistory;
+import com.mungwin.payngwinteller.domain.model.iam.App;
 import com.mungwin.payngwinteller.domain.model.payment.CollectionOrder;
 import com.mungwin.payngwinteller.domain.model.payment.PaymentProvider;
 import com.mungwin.payngwinteller.domain.model.payment.PaymentTransaction;
@@ -14,8 +15,13 @@ import com.mungwin.payngwinteller.domain.repository.payment.PaymentTransactionRe
 import com.mungwin.payngwinteller.domain.response.payment.MerchantSuccessResponse;
 import com.mungwin.payngwinteller.exception.ApiException;
 import com.mungwin.payngwinteller.exception.Precondition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -24,10 +30,17 @@ import java.util.Optional;
 
 @Component
 public class BasePayProvider {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private RestTemplate restTemplate;
     protected CollectionOrderRepository collectionOrderRepository;
     protected AccountRepository accountRepository;
     protected AccountBalanceHistoryRepository accountBalanceHistoryRepository;
     protected PaymentTransactionRepository paymentTransactionRepository;
+
+    @Autowired
+    public void setRestTemplate(@Qualifier("callbackRestTemplate") RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Autowired
     public void setCollectionOrderRepository(CollectionOrderRepository collectionOrderRepository) {
@@ -139,5 +152,14 @@ public class BasePayProvider {
         successResponse.setOrder(order);
         successResponse.setPaymentTransaction(paymentTransaction);
         return successResponse;
+    }
+    public void forwardToMerchantSite(MerchantSuccessResponse response, App app) {
+        ResponseEntity<String> entity = restTemplate.postForEntity(
+                app.getCallbackUrl(), response, String.class
+        );
+        CollectionOrder order = response.getOrder();
+        order.setCallbackResponseBody(entity.getBody());
+        order.setCallbackResponseStatusCode(entity.getStatusCodeValue());
+        collectionOrderRepository.save(order);
     }
 }
