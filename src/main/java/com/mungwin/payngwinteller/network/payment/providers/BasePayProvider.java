@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
@@ -154,12 +155,19 @@ public class BasePayProvider {
         return successResponse;
     }
     public void forwardToMerchantSite(MerchantSuccessResponse response, App app) {
-        ResponseEntity<String> entity = restTemplate.postForEntity(
-                app.getCallbackUrl(), response, String.class
-        );
         CollectionOrder order = response.getOrder();
-        order.setCallbackResponseBody(entity.getBody());
-        order.setCallbackResponseStatusCode(entity.getStatusCodeValue());
+        try {
+            ResponseEntity<String> entity = restTemplate.postForEntity(
+                    app.getCallbackUrl(), response, String.class
+            );
+            order.setCallbackResponseBody(entity.getBody());
+            order.setCallbackResponseStatusCode(entity.getStatusCodeValue());
+        } catch (HttpClientErrorException ex) {
+            order.setCallbackResponseStatusCode(ex.getRawStatusCode());
+            order.setCallbackResponseBody(ex.getResponseBodyAsString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         collectionOrderRepository.save(order);
     }
 }
