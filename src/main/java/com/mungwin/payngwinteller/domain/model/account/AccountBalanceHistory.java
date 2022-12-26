@@ -16,6 +16,9 @@ public class AccountBalanceHistory extends BaseSerialEntity {
     private Long accountId;
     @Column(name = "transaction_id")
     private Long transactionId;
+
+    @Column(name = "payment_transaction_id")
+    private Long paymentTransactionId;
     @Column(name = "opening_balance")
     private Double openingBalance;
     private Double movement;
@@ -40,6 +43,14 @@ public class AccountBalanceHistory extends BaseSerialEntity {
 
     public void setTransactionId(Long transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public Long getPaymentTransactionId() {
+        return paymentTransactionId;
+    }
+
+    public void setPaymentTransactionId(Long paymentTransactionId) {
+        this.paymentTransactionId = paymentTransactionId;
     }
 
     public Double getOpeningBalance() {

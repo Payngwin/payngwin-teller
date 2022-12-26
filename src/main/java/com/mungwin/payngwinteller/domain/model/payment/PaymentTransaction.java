@@ -1,8 +1,7 @@
 package com.mungwin.payngwinteller.domain.model.payment;
 
 
-
-import com.mungwin.payngwinteller.domain.model.BaseEntity;
+import com.mungwin.payngwinteller.domain.model.BaseSerialEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "payment_transaction")
-public class PaymentTransaction extends BaseEntity {
+public class PaymentTransaction extends BaseSerialEntity {
     private Double amount;
     private String status;
     private String comment;

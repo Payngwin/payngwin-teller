@@ -31,22 +31,26 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
         Optional<CollectionOrder> orderOptional = collectionOrderRepository.findFirstByToken(orderToken);
         Precondition.check(orderOptional.isPresent(), ApiException.RESOURCE_NOT_FOUND);
         CollectionOrder order = orderOptional.get();
-        String referenceId = UUID.randomUUID().toString();
         String accessToken = moMoRestClient.login().getAccess_token();
+
+        String referenceId = UUID.randomUUID().toString();
         MoMoPayRequest moMoPayRequest = new MoMoPayRequest();
         moMoPayRequest.setAmount(String.valueOf(order.getAmount()));
         moMoPayRequest.setCurrency(order.getCurrency());
         moMoPayRequest.setExternalId(order.getExternalId());
+
         MoMoPayer payer = new MoMoPayer();
         payer.setPartyId(payerId);
         payer.setPartyIdType("MSISDN");
         moMoPayRequest.setPayer(payer);
         moMoPayRequest.setPayerMessage(order.getOComment());
         moMoPayRequest.setPayeeNote(comment);
+
         order.setProviderToken(referenceId);
         order.setNotifyEmail(returnEmail);
         order.setNotifyPhoneNumber(payerId);
         collectionOrderRepository.save(order);
+
         boolean pushed = moMoRestClient.requestToPay(moMoPayRequest, referenceId, accessToken);
         // start a thread to monitor this payment
         return pushed;
