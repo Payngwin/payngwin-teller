@@ -1,13 +1,13 @@
 package com.mungwin.payngwinteller.domain.request.payment;
 
 
-import javax.validation.constraints.NotBlank;
-
 public class CaptureRequestPayload {
     private String returnEmail;
-    @NotBlank(message = "amount is required")
     private String amount;
-    private String payerPhoneNumber;
+    private String payerId;
+    private String payerExpireDate;
+    private String payerCode;
+    private String comment;
 
     public String getReturnEmail() {
         return returnEmail;
@@ -25,11 +25,35 @@ public class CaptureRequestPayload {
         this.amount = amount;
     }
 
-    public String getPayerPhoneNumber() {
-        return payerPhoneNumber;
+    public String getPayerId() {
+        return payerId;
     }
 
-    public void setPayerPhoneNumber(String payerPhoneNumber) {
-        this.payerPhoneNumber = payerPhoneNumber;
+    public void setPayerId(String payerId) {
+        this.payerId = payerId;
+    }
+
+    public String getPayerExpireDate() {
+        return payerExpireDate;
+    }
+
+    public void setPayerExpireDate(String payerExpireDate) {
+        this.payerExpireDate = payerExpireDate;
+    }
+
+    public String getPayerCode() {
+        return payerCode;
+    }
+
+    public void setPayerCode(String payerCode) {
+        this.payerCode = payerCode;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

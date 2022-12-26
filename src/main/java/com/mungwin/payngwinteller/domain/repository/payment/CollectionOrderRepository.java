@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CollectionOrderRepository extends JpaRepository<CollectionOrder, Long> {
     Optional<CollectionOrder> findFirstByExternalIdAndAccountIdAndTag(String externalId, Long accountId, String tag);
+    Optional<CollectionOrder> findFirstByToken(String token);
 }

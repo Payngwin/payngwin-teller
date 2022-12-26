@@ -1,7 +1,8 @@
 package com.mungwin.payngwinteller.domain.request.payment;
 
 public class CallbackRequest {
-    private AmountDTO amount;
+    private Double amount;
+    private String currency;
     private String comment;
     private String status;
     private String externalId;
@@ -10,12 +11,20 @@ public class CallbackRequest {
     private String returnToken;
     private String notifyEmail;
 
-    public AmountDTO getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(AmountDTO amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getComment() {
