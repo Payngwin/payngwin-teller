@@ -2,6 +2,7 @@ package com.mungwin.payngwinteller.network.payment.providers;
 
 import com.mungwin.payngwinteller.constant.PaymentCharges;
 import com.mungwin.payngwinteller.constant.TransactionStatuses;
+import com.mungwin.payngwinteller.constant.UtilityAccount;
 import com.mungwin.payngwinteller.domain.model.account.Account;
 import com.mungwin.payngwinteller.domain.model.account.AccountBalanceHistory;
 import com.mungwin.payngwinteller.domain.model.iam.App;
@@ -169,5 +170,26 @@ public class BasePayProvider {
             e.printStackTrace();
         }
         collectionOrderRepository.save(order);
+    }
+    public Account findUtilityAccount(String name) {
+        switch (name) {
+            case UtilityAccount.COLLECTION_NAME: {
+                Optional<Account> optional = accountRepository.findById(UtilityAccount.COLLECTION_ID);
+                Precondition.check(optional.isPresent(), ApiException.RESOURCE_NOT_FOUND);
+                return optional.get();
+            }
+            case UtilityAccount.PAYNGWIN_NAME: {
+                Optional<Account> optional = accountRepository.findById(UtilityAccount.PAYNGWIN_ID);
+                Precondition.check(optional.isPresent(), ApiException.RESOURCE_NOT_FOUND);
+                return optional.get();
+            }
+            case UtilityAccount.PAYMENT_PROVIDER_NAME: {
+                Optional<Account> optional = accountRepository.findById(UtilityAccount.PAYMENT_PROVIDER_ID);
+                Precondition.check(optional.isPresent(), ApiException.RESOURCE_NOT_FOUND);
+                return optional.get();
+            }
+            default:
+                throw ApiException.RESOURCE_NOT_FOUND;
+        }
     }
 }

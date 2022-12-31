@@ -1,8 +1,7 @@
 package com.mungwin.payngwinteller.domain.model.payment;
 
 
-
-import com.mungwin.payngwinteller.domain.model.BaseEntity;
+import com.mungwin.payngwinteller.domain.model.BaseSerialEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "payment_provider")
-public class PaymentProvider extends BaseEntity {
+public class PaymentProvider extends BaseSerialEntity {
     private String name;
     private String description;
     private String address;

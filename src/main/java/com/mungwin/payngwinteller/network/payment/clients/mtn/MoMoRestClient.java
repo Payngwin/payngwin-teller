@@ -110,27 +110,27 @@ public class MoMoRestClient extends RestResource {
         throw ApiException.UNDOCUMENTED_ERROR;
     }
 
-    public MoMoPayResponse monitorForPayStatus(String referenceId, String authToken, boolean init, int times) {
+    public MoMoPayResponse monitorForPayStatus(String referenceId, String authToken, int times) {
         try {
-            // slack 20s
-            if (init) {
-                Thread.sleep(120000);
-            }
             // peek
             MoMoPayResponse payResponse = peekForPayStatus(referenceId, authToken);
             switch (payResponse.getStatus()) {
                 case "PENDING" :
                     Thread.sleep(30000);
                     if (times > 10) {
+                        payResponse.setSuccess(false);
                         payResponse.setReason("Payment took too long to complete");
                         return payResponse;
                     }
                     logger.info("Trying to peek for payment status again, done so {} times already", times + 1);
                     logger.info("PayResponse: {}", payResponse);
-                    return monitorForPayStatus(referenceId, authToken, false, times + 1);
+                    return monitorForPayStatus(referenceId, authToken, times + 1);
                 case "SUCCESSFUL" :
                 case "SUCCESSFULL" :
+                    payResponse.setSuccess(true);
+                    return payResponse;
                 default:
+                    payResponse.setSuccess(false);
                     return payResponse;
             }
         } catch (Exception e) {

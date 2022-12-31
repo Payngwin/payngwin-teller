@@ -7,6 +7,7 @@ public class MoMoPayResponse {
     private MoMoPayer payer;
     private String status;
     private String reason;
+    private Boolean success;
 
     public Double getAmount() {
         return amount;
@@ -54,5 +55,13 @@ public class MoMoPayResponse {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }

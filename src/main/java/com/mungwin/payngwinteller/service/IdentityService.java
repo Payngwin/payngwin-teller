@@ -42,7 +42,7 @@ public class IdentityService {
 
     @Transactional
     public JWTResponse login(String email, String password, Long duration) {
-        Precondition.check(Arrays.stream((new Object[]{email, password, duration})).noneMatch(Objects::isNull),
+        Precondition.check(Arrays.stream(new Object[]{email, password, duration}).noneMatch(Objects::isNull),
                 ApiException.APP_UNAUTHORIZED);
         Optional<App> optionalApp = appRepository.findFirstByEmail(email);
         Precondition.check(optionalApp.isPresent(), ApiException.APP_UNAUTHORIZED);
@@ -50,7 +50,8 @@ public class IdentityService {
         Precondition.check(passwordEncoder.matches(password, app.getPassword()), ApiException.APP_UNAUTHORIZED);
         JWTResponse  response = jwtService.encode(
                 app.getEmail(), app.getId().toString(), PrincipalType.app, TokenScope.write, duration);
-        appTokenRepository.deleteAllByAppId(app.getId());
+        // appTokenRepository.deleteAllByAppId(app.getId());
+        // TODO: implement proper token revoke strategy
         AppToken  appToken = new AppToken();
         appToken.setAppId(app.getId());
         appToken.setToken(response.getAccessToken());
