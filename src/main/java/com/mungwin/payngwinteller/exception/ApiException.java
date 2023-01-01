@@ -3,38 +3,40 @@ package com.mungwin.payngwinteller.exception;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.http.HttpStatus;
 
+import static com.mungwin.payngwinteller.i18n.I18nService.t;
+
 @JsonIgnoreProperties({"stackTrace", "cause", "suppressed", "localizedMessage"})
 public class ApiException extends RuntimeException {
     public static final ApiException APP_UNAUTHORIZED = new ApiException("U401",
-            "App is not authenticated", HttpStatus.UNAUTHORIZED);
+            t("bad_user_credentials"), HttpStatus.UNAUTHORIZED);
     public static final ApiException APP_ACCESS_DENIED = new ApiException("U403",
-            "Access is denied for this app", HttpStatus.FORBIDDEN);
+            t("user_access_denied"), HttpStatus.FORBIDDEN);
     public static final ApiException EMAIL_ALREADY_EXISTS = new ApiException("U422",
-            "App email already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+            t("sorry_email_in_use"), HttpStatus.UNPROCESSABLE_ENTITY);
     public static final ApiException DUPLICATE_ACCOUNT_NOT_ALLOWED = new ApiException("A409",
-            "Duplicate account not allowed", HttpStatus.UNPROCESSABLE_ENTITY);
+            t("account_creation_limit"), HttpStatus.UNPROCESSABLE_ENTITY);
     public static final ApiException INVALID_TOKEN = new ApiException("T400",
-            "Invalid token", HttpStatus.UNAUTHORIZED);
+            t("invalid_token"), HttpStatus.UNAUTHORIZED);
     public static final ApiException INVALID_REFRESH_TOKEN = new ApiException("T403",
-            "Invalid Refresh token", HttpStatus.UNAUTHORIZED);
+            t("invalid_token"), HttpStatus.UNAUTHORIZED);
     public static final ApiException EXPIRED_TOKEN = new ApiException("T401",
-            "Expired token", HttpStatus.UNAUTHORIZED);
+            t("expired_token"), HttpStatus.UNAUTHORIZED);
     public static final ApiException INVALID_RESOURCE_ID = new ApiException("T404",
-            "Invalid Resource id supplied with token", HttpStatus.UNAUTHORIZED);
+            t("invalid_token_resource_id"), HttpStatus.UNAUTHORIZED);
     public static final ApiException RESOURCE_NOT_FOUND = new ApiException("R404",
-            "Resource not found",HttpStatus.NOT_FOUND);
+            t("resource_not_found"),HttpStatus.NOT_FOUND);
     public static final ApiException RESOURCE_ALREADY_EXIST = new ApiException("R409",
-            "Resource already exist", HttpStatus.CONFLICT);
+            t("resource_already_exist"), HttpStatus.CONFLICT);
     public static final ApiException IN_COMPLETE_DOCUMENTS = new ApiException("D400",
-            "Incomplete Documents", HttpStatus.BAD_REQUEST);
+            t("incomplete_documents"), HttpStatus.BAD_REQUEST);
     public static final ApiException UNSUPPORTED_MEDIA_TYPE = new ApiException("D415",
-            "Unsupported Media Type", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            t("unsupported_media_type"), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     public static final ApiException BAD_REQUEST_INPUTS = new ApiException("R422",
-            "One or more inputs were invalid", HttpStatus.UNPROCESSABLE_ENTITY);
+            t("input_validation_failed"), HttpStatus.UNPROCESSABLE_ENTITY);
     public static final ApiException EXTERNAL_ID_NOT_UNIQUE = new ApiException(
-            "E422", "externalId must be unique accross account and tags", HttpStatus.UNPROCESSABLE_ENTITY);
+            "E422", t("external_id_unique_across_tags"), HttpStatus.UNPROCESSABLE_ENTITY);
     public static final ApiException UNDOCUMENTED_ERROR = new ApiException("E500",
-            "Undocumented error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+            t("undocumented_error"), HttpStatus.INTERNAL_SERVER_ERROR);
     private String code;
     private final StringBuilder details = new StringBuilder();
     private HttpStatus status;

@@ -40,53 +40,54 @@ public class EmailService {
         send(template, ctx, subject, from, to, null, bcc);
     }
     public void send(String template, Context ctx, String subject, EmailAddress from, EmailAddress to, List<EmailAddress> cc, List<EmailAddress> bcc) {
-        Thread thread = new Thread(() -> {
-            synchronized (mailSender) {
-                try {
-                    this.mimeMessage = this.mailSender.createMimeMessage();
-                    this.messageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
-                    logger.info("Sending email to: {}", to);
-                    ctx.setVariable("appName", appName);
-                    String content = templateEngine.process(template, ctx);
-                    from.setPersonal(String.format("%s from %s", from.getPersonal(), appName));
-                    messageHelper.setFrom(internetAddressFromEmail(from));
-                    messageHelper.setTo(internetAddressFromEmail(to));
-                    if(cc != null && !cc.isEmpty()) {
-                        try {
-                            messageHelper.setCc(cc.stream().map(c -> {
-                                try {
-                                    return internetAddressFromEmail(c);
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }).toArray(InternetAddress[]::new));
-                        } catch (Exception ex) {
-                            logger.error(ex.getMessage());
-                        }
+        (new Thread(() -> sendStub(template, ctx, subject, from, to, cc, bcc))).start();
+    }
+    public void sendStub(String template, Context ctx, String subject, EmailAddress from,
+                         EmailAddress to, List<EmailAddress> cc, List<EmailAddress> bcc) {
+        synchronized (mailSender) {
+            try {
+                this.mimeMessage = this.mailSender.createMimeMessage();
+                this.messageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
+                logger.info("Sending email to: {}", to);
+                ctx.setVariable("appName", appName);
+                String content = templateEngine.process(template, ctx);
+                from.setPersonal(String.format("%s from %s", from.getPersonal(), appName));
+                messageHelper.setFrom(internetAddressFromEmail(from));
+                messageHelper.setTo(internetAddressFromEmail(to));
+                if(cc != null && !cc.isEmpty()) {
+                    try {
+                        messageHelper.setCc(cc.stream().map(c -> {
+                            try {
+                                return internetAddressFromEmail(c);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).toArray(InternetAddress[]::new));
+                    } catch (Exception ex) {
+                        logger.error(ex.getMessage());
                     }
-                    if(bcc != null && !bcc.isEmpty()) {
-                        try {
-                            messageHelper.setBcc(bcc.stream().map(c -> {
-                                try {
-                                    return internetAddressFromEmail(c);
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }).toArray(InternetAddress[]::new));
-                        } catch (Exception ex) {
-                            logger.error(ex.getMessage());
-                        }
-                    }
-                    messageHelper.setSubject(String.format("[%s] %s",appName, subject));
-                    messageHelper.setText(content, true);
-                    mailSender.send(mimeMessage);
-                    logger.info("Email sent");
-                } catch (Exception ex) {
-                    logger.error(ex.getMessage());
                 }
+                if(bcc != null && !bcc.isEmpty()) {
+                    try {
+                        messageHelper.setBcc(bcc.stream().map(c -> {
+                            try {
+                                return internetAddressFromEmail(c);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).toArray(InternetAddress[]::new));
+                    } catch (Exception ex) {
+                        logger.error(ex.getMessage());
+                    }
+                }
+                messageHelper.setSubject(String.format("[%s] %s",appName, subject));
+                messageHelper.setText(content, true);
+                mailSender.send(mimeMessage);
+                logger.info("Email sent");
+            } catch (Exception ex) {
+                logger.error(ex.getMessage());
             }
-        });
-        thread.start();
+        }
     }
     public static InternetAddress internetAddressFromEmail(EmailAddress email) throws Exception {
         return email.getPersonal() == null ?

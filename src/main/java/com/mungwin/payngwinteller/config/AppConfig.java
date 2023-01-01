@@ -1,5 +1,6 @@
 package com.mungwin.payngwinteller.config;
 
+import com.mungwin.payngwinteller.i18n.I18nContextInterceptor;
 import com.mungwin.payngwinteller.security.logs.interceptors.LogActivityContextInterceptor;
 import com.mungwin.payngwinteller.security.props.ResourceServerProps;
 import com.mungwin.payngwinteller.security.service.auditing.AuditService;
@@ -54,6 +55,7 @@ public class AppConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**/public/console/**");
         registry.addInterceptor(new FlushSecurityContextInterceptor());
         registry.addInterceptor(new LogActivityContextInterceptor());
+        registry.addInterceptor(new I18nContextInterceptor());
     }
 
     @Bean

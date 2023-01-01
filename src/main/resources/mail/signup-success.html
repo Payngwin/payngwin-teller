@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SignUpSuccess</title>
+    <style>
+         tr td {
+            padding: 0 15px;
+        }
+    </style>
+</head>
+<body style="padding:10px;margin:0;background:#dddddd;">
+<table style="width:100%;height:100%;background:#dddddd;border-collapse:collapse;font-family: 'Helvetica Neue','Helvetica',Helvetica,Arial,sans-serif;">
+    <tbody>
+        <tr>
+            <td colspan="100%" style="width:100%;"><h3><span th:text="${appName}">Payngwin</span>: <span>Sign Up Successful</span></h3></td>
+        </tr>
+        <tr style="width:100%;background:#F2F2F2;">
+            <td style="width:100%">
+                <table style="width:100%;height:100%;background:#F2F2F2;">
+                    <tbody>
+                    <tr style="max-height:100px;">
+                        <td colspan="100%">
+                            <h4><span>Hello </span><span th:text="${username}">Nnouka</span></h4>
+                        </td>
+                    </tr>
+                    <tr style="max-height:100px;">
+                        <td colspan="100%">
+                            <h2>You care about online payments and transfer of value, ...?</h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="100%">
+                            We spend our work life to offer you online payment services with:
+                        </td>
+                    </tr>
+                    <tr style="max-height:100px;">
+                        <td style="text-align:right;">
+                            <span style="width:15px;height:15px;display:flex;justify-content:center;align-items:center;color:#669D8B;background:transparent;border:2px solid #669D8B;border-radius:50%;">+</span>
+                        </td>
+                        <td style="width:95%;color:#669D8B;">
+                            Security
+                        </td>
+                    </tr>
+                    <tr style="max-height:100px;">
+                        <td style="text-align:right;">
+                            <span style="width:15px;height:15px;display:flex;justify-content:center;align-items:center;color:#669D8B;background:transparent;border:2px solid #669D8B;border-radius:50%;">+</span>
+                        </td>
+                        <td style="width:95%;color:#669D8B;">
+                            Speed
+                        </td>
+                    </tr>
+                    <tr style="max-height:100px;">
+                        <td style="text-align:right;">
+                            <span style="width:15px;height:15px;display:flex;justify-content:center;align-items:center;color:#669D8B;background:transparent;border:2px solid #669D8B;border-radius:50%;">+</span>
+                        </td>
+                        <td style="width:95%;color:#669D8B;">
+                            Reliability
+                        </td>
+                    </tr>
+                    <tr style="max-height:100px;">
+                        <td style="text-align:right;">
+                            <span style="width:15px;height:15px;display:flex;justify-content:center;align-items:center;color:#669D8B;background:transparent;border:2px solid #669D8B;border-radius:50%;">+</span>
+                        </td>
+                        <td style="width:95%;color:#669D8B;">
+                            Support
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr style="width:100%;background:#F2F2F2;">
+            <td colspan="100%">
+                <table style="width:100%;height:100%;background:#F2F2F2;">
+                    <tbody>
+                    <tr>
+                        <td colspan="100%">
+                            <h3>Welcome on board</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="min-height:50px;">
+                                <a th:href="${activationUrl}" style="text-decoration:none;text-transform:none;background-color:#669D8B;color:#ffffff;padding:5px 15px;cursor:pointer;border:none;outline:none;border-radius:4px;">
+                                    Start here: verify your email
+                                </a>
+                            </div>
+                            <div>
+                                Or copy this link to your browser if that did not work
+                            </div>
+                            <div>
+                                <span th:text="${activationUrl}">url</span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
