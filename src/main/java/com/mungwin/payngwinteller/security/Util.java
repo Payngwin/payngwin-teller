@@ -26,7 +26,7 @@ public class Util {
         return new String(encodeAuth);
     }
     public static BasicAuthParts parseBasicAuth(String authStr) {
-        if(authStr == null || authStr.isEmpty() || !authStr.startsWith("Basic ")) {
+        if(authStr == null || !authStr.startsWith("Basic ")) {
             return null;
         }
         try {

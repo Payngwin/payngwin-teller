@@ -93,15 +93,19 @@ public class BasePayProvider {
 
         // account balance history opening balances
         AccountBalanceHistory merchantBalanceHistory = new AccountBalanceHistory();
+        merchantBalanceHistory.setAccountId(merchantAccount.getId());
         merchantBalanceHistory.setOpeningBalance(merchantAccount.getCurrentBalance());
 
         AccountBalanceHistory payngwinBalanceHistory = new AccountBalanceHistory();
+        payngwinBalanceHistory.setAccountId(payngwinAccount.getId());
         payngwinBalanceHistory.setOpeningBalance(payngwinAccount.getCurrentBalance());
 
         AccountBalanceHistory providerBalanceHistory = new AccountBalanceHistory();
+        providerBalanceHistory.setAccountId(providerAccount.getId());
         providerBalanceHistory.setOpeningBalance(providerAccount.getCurrentBalance());
 
         AccountBalanceHistory collectionBalanceHistory = new AccountBalanceHistory();
+        collectionBalanceHistory.setAccountId(collectionAccount.getId());
         collectionBalanceHistory.setOpeningBalance(collectionAccount.getCurrentBalance());
 
         // credit accounts
@@ -119,19 +123,15 @@ public class BasePayProvider {
         paymentTransaction.setUpdatedAt(Instant.now());
         paymentTransactionRepository.save(paymentTransaction);
         // balance history closing balances
-        merchantBalanceHistory.setAccountId(merchantAccount.getId());
         merchantBalanceHistory.setClosingBalance(merchantAccount.getCurrentBalance());
         merchantBalanceHistory.setMovement(merchantCredit);
 
-        payngwinBalanceHistory.setAccountId(payngwinAccount.getId());
         payngwinBalanceHistory.setClosingBalance(payngwinAccount.getCurrentBalance());
         payngwinBalanceHistory.setMovement(payngwinCredit);
 
-        providerBalanceHistory.setAccountId(providerAccount.getId());
         providerBalanceHistory.setClosingBalance(providerAccount.getCurrentBalance());
         providerBalanceHistory.setMovement(providerCredit);
 
-        collectionBalanceHistory.setAccountId(collectionAccount.getId());
         collectionBalanceHistory.setClosingBalance(collectionAccount.getCurrentBalance());
         collectionBalanceHistory.setMovement(amount);
 
