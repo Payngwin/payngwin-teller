@@ -3,6 +3,7 @@ package com.mungwin.payngwinteller.network.payment.providers.mtn;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mungwin.payngwinteller.constant.PaymentProviderHolder;
+import com.mungwin.payngwinteller.constant.TransactionStatuses;
 import com.mungwin.payngwinteller.constant.UtilityAccount;
 import com.mungwin.payngwinteller.domain.model.account.Account;
 import com.mungwin.payngwinteller.domain.model.iam.App;
@@ -116,6 +117,8 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
                 forwardToMerchantSite(successResponse, app);
                 // notify success always copy system account, merchant account and payer
             } else {
+                order.setStatus(TransactionStatuses.FAILED.toString());
+                collectionOrderRepository.save(order);
                 // notify failure always copy system account, merchant account and payer
             }
         } catch (InterruptedException ignored) {}

@@ -1,6 +1,7 @@
 package com.mungwin.payngwinteller.network.payment.providers;
 
 import com.mungwin.payngwinteller.constant.PaymentCharges;
+import com.mungwin.payngwinteller.constant.PaymentProviderHolder;
 import com.mungwin.payngwinteller.constant.TransactionStatuses;
 import com.mungwin.payngwinteller.constant.UtilityAccount;
 import com.mungwin.payngwinteller.domain.model.account.Account;
@@ -86,7 +87,7 @@ public class BasePayProvider {
             10. The teller registers a payment transaction record
          */
         Double amount = paymentTransaction.getAmount();
-        Double payngwinCredit = PaymentCharges.MOBILE.getCharge() * amount;
+        Double payngwinCredit = getPayngwinCharge(paymentProvider.getName()) * amount;
         Double providerCredit = paymentProvider.getCharge() * amount;
         Double merchantCredit = amount - payngwinCredit - providerCredit;
 
@@ -190,6 +191,16 @@ public class BasePayProvider {
             }
             default:
                 throw ApiException.RESOURCE_NOT_FOUND;
+        }
+    }
+
+    double getPayngwinCharge(String name) {
+        switch (name) {
+            case PaymentProviderHolder.MTN:
+            case PaymentProviderHolder.ORANGE:
+                return PaymentCharges.MOBILE.getCharge();
+            default:
+                return PaymentCharges.CARD.getCharge();
         }
     }
 }
