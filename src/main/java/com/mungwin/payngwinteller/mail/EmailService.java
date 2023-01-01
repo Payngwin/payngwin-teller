@@ -24,6 +24,8 @@ public class EmailService {
     private final TemplateEngine templateEngine;
     @Value("${spring.application.name}")
     private String appName;
+    @Value("${spring.application.logo}")
+    private String appLogoUrl;
 
     @Autowired
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
@@ -50,6 +52,7 @@ public class EmailService {
                 this.messageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
                 logger.info("Sending email to: {}", to);
                 ctx.setVariable("appName", appName);
+                ctx.setVariable("appLogoUrl", appLogoUrl);
                 String content = templateEngine.process(template, ctx);
                 from.setPersonal(String.format("%s from %s", from.getPersonal(), appName));
                 messageHelper.setFrom(internetAddressFromEmail(from));

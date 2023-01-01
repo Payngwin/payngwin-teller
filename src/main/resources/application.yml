@@ -2,6 +2,7 @@ spring:
   application:
     name: Payngwin
     version: 0.0.1
+    logo: https://storage.googleapis.com/payngwin/logo/payngwin.png
   datasource:
     url: jdbc:postgresql://localhost:5432/payngwin
     driver-class-name: org.postgresql.Driver

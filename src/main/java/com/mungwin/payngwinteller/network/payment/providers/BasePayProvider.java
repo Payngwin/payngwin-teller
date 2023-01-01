@@ -1,22 +1,27 @@
 package com.mungwin.payngwinteller.network.payment.providers;
 
-import com.mungwin.payngwinteller.constant.PaymentCharges;
-import com.mungwin.payngwinteller.constant.PaymentProviderHolder;
-import com.mungwin.payngwinteller.constant.TransactionStatuses;
-import com.mungwin.payngwinteller.constant.UtilityAccount;
+import com.mungwin.payngwinteller.constant.*;
 import com.mungwin.payngwinteller.domain.model.account.Account;
 import com.mungwin.payngwinteller.domain.model.account.AccountBalanceHistory;
 import com.mungwin.payngwinteller.domain.model.iam.App;
+import com.mungwin.payngwinteller.domain.model.iam.User;
+import com.mungwin.payngwinteller.domain.model.iam.UserProfile;
+import com.mungwin.payngwinteller.domain.model.mail.EmailAddress;
 import com.mungwin.payngwinteller.domain.model.payment.CollectionOrder;
 import com.mungwin.payngwinteller.domain.model.payment.PaymentProvider;
 import com.mungwin.payngwinteller.domain.model.payment.PaymentTransaction;
 import com.mungwin.payngwinteller.domain.repository.account.AccountBalanceHistoryRepository;
 import com.mungwin.payngwinteller.domain.repository.account.AccountRepository;
+import com.mungwin.payngwinteller.domain.repository.iam.UserProfileRepository;
+import com.mungwin.payngwinteller.domain.repository.iam.UserRepository;
 import com.mungwin.payngwinteller.domain.repository.payment.CollectionOrderRepository;
 import com.mungwin.payngwinteller.domain.repository.payment.PaymentTransactionRepository;
 import com.mungwin.payngwinteller.domain.response.payment.MerchantSuccessResponse;
 import com.mungwin.payngwinteller.exception.ApiException;
 import com.mungwin.payngwinteller.exception.Precondition;
+import com.mungwin.payngwinteller.i18n.I18nContext;
+import com.mungwin.payngwinteller.mail.EmailService;
+import com.mungwin.payngwinteller.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +30,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.thymeleaf.context.Context;
 
 import javax.transaction.Transactional;
+import java.text.DecimalFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
+
+import static com.mungwin.payngwinteller.i18n.I18nService.t;
 
 @Component
 public class BasePayProvider {
@@ -39,6 +50,9 @@ public class BasePayProvider {
     protected AccountRepository accountRepository;
     protected AccountBalanceHistoryRepository accountBalanceHistoryRepository;
     protected PaymentTransactionRepository paymentTransactionRepository;
+    protected UserRepository userRepository;
+    protected UserProfileRepository userProfileRepository;
+    protected EmailService emailService;
 
     @Autowired
     public void setRestTemplate(@Qualifier("callbackRestTemplate") RestTemplate restTemplate) {
@@ -63,6 +77,21 @@ public class BasePayProvider {
     @Autowired
     public void setPaymentTransactionRepository(PaymentTransactionRepository paymentTransactionRepository) {
         this.paymentTransactionRepository = paymentTransactionRepository;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setUserProfileRepository(UserProfileRepository userProfileRepository) {
+        this.userProfileRepository = userProfileRepository;
+    }
+
+    @Autowired
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -171,6 +200,67 @@ public class BasePayProvider {
             e.printStackTrace();
         }
         collectionOrderRepository.save(order);
+    }
+    public void sendSuccessEmail(MerchantSuccessResponse response, App app, String merchantMail, String merchantUsername) {
+        CollectionOrder order = response.getOrder();
+        PaymentTransaction transaction = response.getPaymentTransaction();
+        Context ctx = new Context();
+        ctx.setVariable("merchantName", app.getName());
+        ctx.setVariable("merchantLogoUrl", app.getLogoUrl());
+        ctx.setVariable("title", t("payment_success_notice"));
+        ctx.setVariable("greeting", String.format("%s, %s", t("hello"), order.getNotifyEmail()));
+        ctx.setVariable("message", t("payment_was_made"));
+        ctx.setVariable("heading", t("transaction_details"));
+        ctx.setVariable("txtDate", t("date"));
+        ctx.setVariable("paymentDate", LocalDateTime
+                .from(transaction.getCreatedAt())
+                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", I18nContext.getLang())));
+        ctx.setVariable("txtAmount", t("amount"));
+        ctx.setVariable("amount", Util.decimalFormat()
+                .format(transaction.getAmount()));
+        ctx.setVariable("txtCurrency", t("currency"));
+        ctx.setVariable("currency", order.getCurrency());
+        ctx.setVariable("txtTransactionId", t("transaction_id"));
+        ctx.setVariable("transactionId", transaction.getPaymentTransactionId());
+        ctx.setVariable("txtChannel", t("payment_channel"));
+        ctx.setVariable("channel", transaction.getPaymentChannel());
+        emailService.sendAndBCC("payment-success-notification", ctx, t("payment_success_notice"),
+                Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()),
+                Arrays.asList(
+                        new EmailAddress(merchantMail, merchantUsername),
+                        Addresses.copyDelivery
+                ));
+
+    }
+    public void sendFailureEmail(CollectionOrder order, App app, String paymentChannel, String reason,
+                                 String merchantMail, String merchantUsername) {
+        Context ctx = new Context();
+        ctx.setVariable("merchantName", app.getName());
+        ctx.setVariable("merchantLogoUrl", app.getLogoUrl());
+        ctx.setVariable("title", t("payment_failure_notice"));
+        ctx.setVariable("greeting", String.format("%s, %s", t("hello"), order.getNotifyEmail()));
+        ctx.setVariable("message", t("payment_failed"));
+        ctx.setVariable("heading", t("transaction_details"));
+        ctx.setVariable("txtDate", t("date"));
+        ctx.setVariable("paymentDate", LocalDateTime
+                .from(order.getUpdatedAt())
+                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", I18nContext.getLang())));
+        ctx.setVariable("txtAmount", t("amount"));
+        ctx.setVariable("amount", Util.decimalFormat()
+                .format(order.getAmount()));
+        ctx.setVariable("txtCurrency", t("currency"));
+        ctx.setVariable("currency", order.getCurrency());
+        ctx.setVariable("txtChannel", t("payment_channel"));
+        ctx.setVariable("channel", paymentChannel);
+        ctx.setVariable("txtReason", t("reason"));
+        ctx.setVariable("reason", reason);
+        emailService.sendAndBCC("payment-failure-notification", ctx, t("payment_success_notice"),
+                Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()),
+                Arrays.asList(
+                        new EmailAddress(merchantMail, merchantUsername),
+                        Addresses.copyDelivery
+                ));
+
     }
     public Account findUtilityAccount(String name) {
         switch (name) {

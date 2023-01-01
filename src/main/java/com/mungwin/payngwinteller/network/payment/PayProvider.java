@@ -11,5 +11,6 @@ public interface PayProvider {
             String payerExpireDate, String payerCode, String comment);
     void capture(
             App app, CollectionOrder order, Account merchantAccount, Account providerAccount,
-            Account payngwinAccount, Account collectionAccount, PaymentProvider paymentProvider);
+            Account payngwinAccount, Account collectionAccount, PaymentProvider paymentProvider,
+            String merchantMail, String merchantUsername);
 }
