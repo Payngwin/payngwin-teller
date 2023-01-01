@@ -224,8 +224,8 @@ public class BasePayProvider {
         ctx.setVariable("transactionId", transaction.getPaymentTransactionId());
         ctx.setVariable("txtChannel", t("payment_channel"));
         ctx.setVariable("channel", transaction.getPaymentChannel());
-        emailService.sendAndBCC("payment-success-notification", ctx, t("payment_success_notice"),
-                Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()),
+        emailService.sendStub("payment-success-notification", ctx, t("payment_success_notice"),
+                Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()), null,
                 Arrays.asList(
                         new EmailAddress(merchantMail, merchantUsername),
                         Addresses.copyDelivery
@@ -254,8 +254,8 @@ public class BasePayProvider {
         ctx.setVariable("channel", paymentChannel);
         ctx.setVariable("txtReason", t("reason"));
         ctx.setVariable("reason", reason);
-        emailService.sendAndBCC("payment-failure-notification", ctx, t("payment_success_notice"),
-                Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()),
+        emailService.sendStub("payment-failure-notification", ctx, t("payment_success_notice"),
+                Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()), null,
                 Arrays.asList(
                         new EmailAddress(merchantMail, merchantUsername),
                         Addresses.copyDelivery
