@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "collection_order")
@@ -54,6 +55,8 @@ public class CollectionOrder extends BaseSerialEntity {
     private Instant updatedAt = Instant.now();
     @Column(name = "account_id")
     private Long accountId;
+    @Column(name = "app_id")
+    private UUID appId;
 
     public String getToken() {
         return token;
@@ -253,5 +256,29 @@ public class CollectionOrder extends BaseSerialEntity {
 
     public void setAccountId(Long accountId) {
         this.accountId = accountId;
+    }
+
+    public UUID getAppId() {
+        return appId;
+    }
+
+    public void setAppId(UUID appId) {
+        this.appId = appId;
+    }
+
+    public String getoComment() {
+        return oComment;
+    }
+
+    public void setoComment(String oComment) {
+        this.oComment = oComment;
+    }
+
+    public String getoSource() {
+        return oSource;
+    }
+
+    public void setoSource(String oSource) {
+        this.oSource = oSource;
     }
 }

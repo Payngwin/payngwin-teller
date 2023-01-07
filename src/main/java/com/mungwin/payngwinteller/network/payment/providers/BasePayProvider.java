@@ -12,6 +12,7 @@ import com.mungwin.payngwinteller.domain.model.payment.PaymentProvider;
 import com.mungwin.payngwinteller.domain.model.payment.PaymentTransaction;
 import com.mungwin.payngwinteller.domain.repository.account.AccountBalanceHistoryRepository;
 import com.mungwin.payngwinteller.domain.repository.account.AccountRepository;
+import com.mungwin.payngwinteller.domain.repository.iam.AppRepository;
 import com.mungwin.payngwinteller.domain.repository.iam.UserProfileRepository;
 import com.mungwin.payngwinteller.domain.repository.iam.UserRepository;
 import com.mungwin.payngwinteller.domain.repository.payment.CollectionOrderRepository;
@@ -36,6 +37,7 @@ import javax.transaction.Transactional;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
@@ -52,6 +54,7 @@ public class BasePayProvider {
     protected PaymentTransactionRepository paymentTransactionRepository;
     protected UserRepository userRepository;
     protected UserProfileRepository userProfileRepository;
+    protected AppRepository appRepository;
     protected EmailService emailService;
 
     @Autowired
@@ -87,6 +90,11 @@ public class BasePayProvider {
     @Autowired
     public void setUserProfileRepository(UserProfileRepository userProfileRepository) {
         this.userProfileRepository = userProfileRepository;
+    }
+
+    @Autowired
+    public void setAppRepository(AppRepository appRepository) {
+        this.appRepository = appRepository;
     }
 
     @Autowired
@@ -178,6 +186,7 @@ public class BasePayProvider {
         ));
 
         order.setStatus(TransactionStatuses.POSTED.toString());
+        order.setUpdatedAt(Instant.now());
         collectionOrderRepository.save(order);
 
         MerchantSuccessResponse successResponse = new MerchantSuccessResponse();
@@ -186,22 +195,29 @@ public class BasePayProvider {
         return successResponse;
     }
     public void forwardToMerchantSite(MerchantSuccessResponse response, App app) {
-        CollectionOrder order = response.getOrder();
-        try {
-            ResponseEntity<String> entity = restTemplate.postForEntity(
-                    app.getCallbackUrl(), response, String.class
-            );
-            order.setCallbackResponseBody(entity.getBody());
-            order.setCallbackResponseStatusCode(entity.getStatusCodeValue());
-        } catch (HttpClientErrorException ex) {
-            order.setCallbackResponseStatusCode(ex.getRawStatusCode());
-            order.setCallbackResponseBody(ex.getResponseBodyAsString());
-        } catch (Exception e) {
-            e.printStackTrace();
+        Optional<CollectionOrder> orderOptional = collectionOrderRepository.findById(response.getOrder().getId());
+        if (orderOptional.isPresent()) {
+            CollectionOrder order = orderOptional.get();
+            try {
+                ResponseEntity<String> entity = restTemplate.postForEntity(
+                        app.getCallbackUrl(), response, String.class
+                );
+                order.setCallbackResponseBody(entity.getBody());
+                order.setCallbackResponseStatusCode(entity.getStatusCodeValue());
+            } catch (HttpClientErrorException ex) {
+                order.setCallbackResponseStatusCode(ex.getRawStatusCode());
+                order.setCallbackResponseBody(ex.getResponseBodyAsString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            collectionOrderRepository.save(order);
         }
-        collectionOrderRepository.save(order);
     }
-    public void sendSuccessEmail(MerchantSuccessResponse response, App app, String merchantMail, String merchantUsername) {
+    public void sendSuccessEmail(
+            MerchantSuccessResponse response, App app,
+            String merchantMail, String merchantUsername,
+            String paymentChannel,
+            String channelLogoUrl) {
         CollectionOrder order = response.getOrder();
         PaymentTransaction transaction = response.getPaymentTransaction();
         Context ctx = new Context();
@@ -213,7 +229,7 @@ public class BasePayProvider {
         ctx.setVariable("heading", t("transaction_details"));
         ctx.setVariable("txtDate", t("date"));
         ctx.setVariable("paymentDate", LocalDateTime
-                .from(transaction.getCreatedAt())
+                .ofInstant(transaction.getCreatedAt(), ZoneId.systemDefault())
                 .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", I18nContext.getLang())));
         ctx.setVariable("txtAmount", t("amount"));
         ctx.setVariable("amount", Util.decimalFormat()
@@ -223,7 +239,8 @@ public class BasePayProvider {
         ctx.setVariable("txtTransactionId", t("transaction_id"));
         ctx.setVariable("transactionId", transaction.getPaymentTransactionId());
         ctx.setVariable("txtChannel", t("payment_channel"));
-        ctx.setVariable("channel", transaction.getPaymentChannel());
+        ctx.setVariable("channel", paymentChannel);
+        ctx.setVariable("channelLogoUrl", channelLogoUrl);
         emailService.sendStub("payment-success-notification", ctx, t("payment_success_notice"),
                 Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()), null,
                 Arrays.asList(
@@ -233,17 +250,18 @@ public class BasePayProvider {
 
     }
     public void sendFailureEmail(CollectionOrder order, App app, String paymentChannel, String reason,
-                                 String merchantMail, String merchantUsername) {
+                                 String merchantMail, String merchantUsername, String channelLogoUrl) {
         Context ctx = new Context();
         ctx.setVariable("merchantName", app.getName());
         ctx.setVariable("merchantLogoUrl", app.getLogoUrl());
-        ctx.setVariable("title", t("payment_failure_notice"));
+        ctx.setVariable("title", t("payment_failed"));
         ctx.setVariable("greeting", String.format("%s, %s", t("hello"), order.getNotifyEmail()));
-        ctx.setVariable("message", t("payment_failed"));
+        ctx.setVariable("message", t("payment_failure_notice"));
         ctx.setVariable("heading", t("transaction_details"));
         ctx.setVariable("txtDate", t("date"));
+        Instant update = order.getUpdatedAt();
         ctx.setVariable("paymentDate", LocalDateTime
-                .from(order.getUpdatedAt())
+                        .ofInstant(order.getUpdatedAt(), ZoneId.systemDefault())
                 .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", I18nContext.getLang())));
         ctx.setVariable("txtAmount", t("amount"));
         ctx.setVariable("amount", Util.decimalFormat()
@@ -254,7 +272,8 @@ public class BasePayProvider {
         ctx.setVariable("channel", paymentChannel);
         ctx.setVariable("txtReason", t("reason"));
         ctx.setVariable("reason", reason);
-        emailService.sendStub("payment-failure-notification", ctx, t("payment_success_notice"),
+        ctx.setVariable("channelLogoUrl", channelLogoUrl);
+        emailService.sendStub("payment-failure-notification", ctx, t("payment_failure_notice"),
                 Addresses.mailFrom, new EmailAddress(order.getNotifyEmail()), null,
                 Arrays.asList(
                         new EmailAddress(merchantMail, merchantUsername),

@@ -64,4 +64,17 @@ public class MoMoPayResponse {
     public void setSuccess(Boolean success) {
         this.success = success;
     }
+
+    @Override
+    public String toString() {
+        return "MoMoPayResponse{" +
+                "amount=" + amount +
+                ", currency='" + currency + '\'' +
+                ", financialTransactionId=" + financialTransactionId +
+                ", payer=" + payer +
+                ", status='" + status + '\'' +
+                ", reason='" + reason + '\'' +
+                ", success=" + success +
+                '}';
+    }
 }

@@ -21,6 +21,7 @@ import com.mungwin.payngwinteller.network.payment.dto.mtn.MoMoPayer;
 import com.mungwin.payngwinteller.network.payment.providers.BasePayProvider;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,20 +36,25 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
 
     @Override
     public boolean push(
-            App app,
             String orderToken, String payerId,
             String returnEmail, String payerExpireDate,
             String payerCode, String comment) {
         Optional<CollectionOrder> orderOptional = collectionOrderRepository.findFirstByToken(orderToken);
-        Optional<Account> merchantOptional = accountRepository.findById(app.getAccountId());
+        Precondition.check(orderOptional.isPresent(), ApiException.RESOURCE_NOT_FOUND);
+
+        CollectionOrder order = orderOptional.get();
+        Optional<App> appOptional = appRepository.findById(order.getAppId());
+        Precondition.check(appOptional.isPresent(), ApiException.RESOURCE_NOT_FOUND);
+
+        App app = appOptional.get();
+        Optional<Account> merchantOptional = accountRepository.findById(order.getAccountId());
         Optional<User> userOptional = userRepository.findById(app.getUserId());
         Optional<UserProfile> profileOptional = userProfileRepository.findFirstByUserId(app.getUserId());
 
-        Precondition.check(orderOptional.isPresent() && merchantOptional.isPresent() &&
+        Precondition.check(merchantOptional.isPresent() &&
                         userOptional.isPresent() && profileOptional.isPresent(),
                 ApiException.RESOURCE_NOT_FOUND);
 
-        CollectionOrder order = orderOptional.get();
         User user = userOptional.get();
         UserProfile profile = profileOptional.get();
 
@@ -56,7 +62,7 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
 
         String referenceId = UUID.randomUUID().toString();
         MoMoPayRequest moMoPayRequest = new MoMoPayRequest();
-        moMoPayRequest.setAmount(String.valueOf(order.getAmount()));
+        moMoPayRequest.setAmount(String.valueOf(order.getAmount().intValue()));
         moMoPayRequest.setCurrency(order.getCurrency());
         moMoPayRequest.setExternalId(order.getExternalId());
 
@@ -64,7 +70,7 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
         payer.setPartyId(payerId);
         payer.setPartyIdType("MSISDN");
         moMoPayRequest.setPayer(payer);
-        moMoPayRequest.setPayerMessage(order.getOComment());
+        moMoPayRequest.setPayerMessage(comment);
         moMoPayRequest.setPayeeNote(comment);
 
         order.setProviderToken(referenceId);
@@ -114,6 +120,8 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
                 paymentTransaction.setCreatedAt(Instant.now());
                 paymentTransaction.setUpdatedAt(Instant.now());
                 paymentTransaction.setInitiatedBy(app.getId().toString());
+                paymentTransaction.setPaymentChannel(paymentProvider.getName());
+                order.setPaymentChannel(paymentProvider.getName());
                 // update books
                 MerchantSuccessResponse successResponse = updateBooks(
                         order, merchantAccount, providerAccount, payngwinAccount, collectionAccount,
@@ -121,13 +129,17 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
                 // forward to merchant site
                 forwardToMerchantSite(successResponse, app);
                 // notify success always copy system account, merchant account and payer
-                sendSuccessEmail(successResponse, app, merchantMail, merchantUsername);
+                sendSuccessEmail(successResponse, app, merchantMail, merchantUsername,
+                        paymentProvider.getName(), paymentProvider.getLogoUrl());
             } else {
                 order.setStatus(TransactionStatuses.FAILED.toString());
+                order.setUpdatedAt(Instant.now());
+                order.setPaymentChannel(paymentProvider.getName());
+                order.setProviderTransactionId(response.getReason());
                 collectionOrderRepository.save(order);
                 // notify failure always copy system account, merchant account and payer
                 sendFailureEmail(order, app, paymentProvider.getName(), response.getReason(),
-                        merchantMail, merchantUsername);
+                        merchantMail, merchantUsername, paymentProvider.getLogoUrl());
             }
         } catch (InterruptedException ignored) {}
     }

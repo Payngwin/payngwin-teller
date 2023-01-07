@@ -6,9 +6,12 @@ import com.mungwin.payngwinteller.domain.model.iam.App;
 import com.mungwin.payngwinteller.domain.model.payment.CollectionOrder;
 import com.mungwin.payngwinteller.domain.repository.account.AccountRepository;
 import com.mungwin.payngwinteller.domain.repository.payment.CollectionOrderRepository;
+import com.mungwin.payngwinteller.domain.request.payment.CollectionPayRequest;
 import com.mungwin.payngwinteller.domain.response.payment.InitCollectionResponse;
 import com.mungwin.payngwinteller.exception.ApiException;
 import com.mungwin.payngwinteller.exception.Precondition;
+import com.mungwin.payngwinteller.network.payment.PayProviderFactory;
+import com.mungwin.payngwinteller.security.service.AppSecurityContextHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +26,14 @@ public class CollectionService {
     private String UI_HOST;
     private final AccountRepository accountRepository;
     private final CollectionOrderRepository collectionOrderRepository;
+    private final PayProviderFactory payProviderFactory;
 
-    public CollectionService(AccountRepository accountRepository, CollectionOrderRepository collectionOrderRepository) {
+    public CollectionService(AccountRepository accountRepository,
+                             CollectionOrderRepository collectionOrderRepository,
+                             PayProviderFactory payProviderFactory) {
         this.accountRepository = accountRepository;
         this.collectionOrderRepository = collectionOrderRepository;
+        this.payProviderFactory = payProviderFactory;
     }
 
     public InitCollectionResponse initCollection(
@@ -42,6 +49,7 @@ public class CollectionService {
                 !collectionOrderRepository.findFirstByExternalIdAndAccountIdAndTag(
                         externalId, app.getAccountId(), tag).isPresent(), ApiException.EXTERNAL_ID_NOT_UNIQUE);
         CollectionOrder order = new CollectionOrder();
+        order.setAppId(app.getId());
         order.setAccountId(app.getAccountId());
         order.setAmount(amount);
         order.setCurrency(currency);
@@ -60,5 +68,13 @@ public class CollectionService {
         order.setTag(tag);
         collectionOrderRepository.save(order);
         return new InitCollectionResponse(token, order.getCreatedAt(), order.getStatus(), UI_HOST);
+    }
+
+    public Boolean pushRequestToPay(CollectionPayRequest payRequest) {
+        return payProviderFactory.getPayProvider(payRequest.getChannel()).push(
+                payRequest.getOrderToken(),
+                payRequest.getPayerId(), payRequest.getReturnEmail(), payRequest.getPayerExpireDate(),
+                payRequest.getPayerCode(), payRequest.getComment()
+        );
     }
 }

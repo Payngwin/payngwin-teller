@@ -7,6 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 public class PortalContextInterceptor implements HandlerInterceptor {
     private final ResourceServerProps resourceServerProps;
@@ -20,7 +21,12 @@ public class PortalContextInterceptor implements HandlerInterceptor {
         String basicToken = request.getHeader("Authorization");
         Util.BasicAuthParts basicAuthParts = Util.parseBasicAuth(basicToken);
         if (basicAuthParts != null && resourceServerProps.getConsoleId().equals(basicAuthParts.getPassword())) {
-            AppSecurityContextHolder.setConsoleId(basicAuthParts.getUsername());
+            try {
+                UUID.fromString(basicAuthParts.getUsername()); // username must be uuid
+                AppSecurityContextHolder.setConsoleId(basicAuthParts.getUsername());
+            } catch (Exception ex) {
+                AppSecurityContextHolder.setConsoleId(null);
+            }
         }
         return true;
     }

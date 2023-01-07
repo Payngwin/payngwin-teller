@@ -7,6 +7,7 @@ public enum TransactionStatuses {
     SUCCESSFUL,
     COMPLETED,
     PROCESSED,
+    PROCESSING,
     AUTHORIZED,
     CANCELLED,
     POSTED,

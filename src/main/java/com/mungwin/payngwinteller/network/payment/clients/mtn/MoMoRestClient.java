@@ -3,7 +3,7 @@ package com.mungwin.payngwinteller.network.payment.clients.mtn;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.mungwin.payngwinteller.constant.CacheKey;
 import com.mungwin.payngwinteller.exception.ApiException;
-import com.mungwin.payngwinteller.network.payment.RestResource;
+import com.mungwin.payngwinteller.network.RestResource;
 import com.mungwin.payngwinteller.network.payment.dto.mtn.*;
 import com.mungwin.payngwinteller.network.payment.props.mtn.MoMoProps;
 import com.mungwin.payngwinteller.security.Util;
@@ -128,8 +128,10 @@ public class MoMoRestClient extends RestResource {
                 case "SUCCESSFUL" :
                 case "SUCCESSFULL" :
                     payResponse.setSuccess(true);
+                    logger.info("PayResponse: {}", payResponse);
                     return payResponse;
                 default:
+                    logger.info("PayResponse: {}", payResponse);
                     payResponse.setSuccess(false);
                     return payResponse;
             }

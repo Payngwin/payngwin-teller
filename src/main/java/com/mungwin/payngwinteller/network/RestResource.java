@@ -1,4 +1,4 @@
-package com.mungwin.payngwinteller.network.payment;
+package com.mungwin.payngwinteller.network;
 import com.mungwin.payngwinteller.exception.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
