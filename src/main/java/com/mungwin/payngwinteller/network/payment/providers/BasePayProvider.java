@@ -185,7 +185,7 @@ public class BasePayProvider {
                 merchantBalanceHistory, payngwinBalanceHistory, providerBalanceHistory, collectionBalanceHistory
         ));
 
-        order.setStatus(TransactionStatuses.POSTED.toString());
+        order.setStatus(TransactionStatuses.POSTED.name());
         order.setUpdatedAt(Instant.now());
         collectionOrderRepository.save(order);
 
@@ -202,11 +202,12 @@ public class BasePayProvider {
                 ResponseEntity<String> entity = restTemplate.postForEntity(
                         app.getCallbackUrl(), response, String.class
                 );
-                order.setCallbackResponseBody(entity.getBody());
+                //order.setCallbackResponseBody(entity.getBody());
                 order.setCallbackResponseStatusCode(entity.getStatusCodeValue());
+                order.setStatus(TransactionStatuses.COMPLETED.name());
             } catch (HttpClientErrorException ex) {
                 order.setCallbackResponseStatusCode(ex.getRawStatusCode());
-                order.setCallbackResponseBody(ex.getResponseBodyAsString());
+                //order.setCallbackResponseBody(ex.getResponseBodyAsString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
