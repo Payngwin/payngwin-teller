@@ -79,6 +79,8 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
         collectionOrderRepository.save(order);
 
         boolean pushed = moMoRestClient.requestToPay(moMoPayRequest, referenceId, accessToken);
+        order.setStatus(TransactionStatuses.FORWARDED.name());
+        collectionOrderRepository.save(order);
         // start a thread to monitor this payment
         if (pushed) {
             Account merchant = merchantOptional.get();
@@ -121,7 +123,10 @@ public class MtnPayProvider extends BasePayProvider implements PayProvider {
                 paymentTransaction.setUpdatedAt(Instant.now());
                 paymentTransaction.setInitiatedBy(app.getId().toString());
                 paymentTransaction.setPaymentChannel(paymentProvider.getName());
+
                 order.setPaymentChannel(paymentProvider.getName());
+                order.setStatus(TransactionStatuses.SUCCESSFUL.name());
+                collectionOrderRepository.save(order);
                 // update books
                 MerchantSuccessResponse successResponse = updateBooks(
                         order, merchantAccount, providerAccount, payngwinAccount, collectionAccount,
