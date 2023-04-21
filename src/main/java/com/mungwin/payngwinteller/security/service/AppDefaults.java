@@ -9,7 +9,7 @@ import java.util.UUID;
 public class AppDefaults {
     private static Role defaultUserRole;
 
-    public static UUID getDefaultUserRoleId() {
+    public static String getDefaultUserRoleId() {
         return defaultUserRole.getId();
     }
 

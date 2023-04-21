@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AppTokenRepository extends JpaRepository<AppToken, UUID> {
+public interface AppTokenRepository extends JpaRepository<AppToken, String> {
     Optional<AppToken> findFirstByToken(String token);
     @Modifying
     @Query("DELETE FROM AppToken a where a.appId = ?1")
-    void deleteAllByAppId(UUID appId);
+    void deleteAllByAppId(String appId);
 }

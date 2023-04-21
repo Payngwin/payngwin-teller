@@ -11,13 +11,13 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseSerialEntityWithCreatorAudit extends BaseSerialEntityWithBasicAudit {
     @CreatedBy
-    protected UUID userId;
+    protected String userId;
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 }

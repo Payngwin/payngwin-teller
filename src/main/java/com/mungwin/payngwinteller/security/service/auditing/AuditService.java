@@ -6,9 +6,9 @@ import org.springframework.data.domain.AuditorAware;
 import java.util.Optional;
 import java.util.UUID;
 
-public class AuditService implements AuditorAware<UUID> {
+public class AuditService implements AuditorAware<String> {
     @Override
-    public Optional<UUID> getCurrentAuditor() {
+    public Optional<String> getCurrentAuditor() {
         if (!AppSecurityContextHolder.shouldFailIfAbsent()) {
             return Optional.empty();
         }

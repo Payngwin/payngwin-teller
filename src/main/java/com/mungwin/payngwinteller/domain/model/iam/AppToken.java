@@ -12,7 +12,7 @@ import java.util.UUID;
 @Table(name = "app_token")
 public class AppToken extends BaseEntity {
     private Instant createdAt = Instant.now();
-    private UUID  appId;
+    private String  appId;
     private String token;
 
     public Instant getCreatedAt() {
@@ -23,11 +23,11 @@ public class AppToken extends BaseEntity {
         this.createdAt = createdAt;
     }
 
-    public UUID getAppId() {
+    public String getAppId() {
         return appId;
     }
 
-    public void setAppId(UUID appId) {
+    public void setAppId(String appId) {
         this.appId = appId;
     }
 

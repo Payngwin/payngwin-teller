@@ -123,7 +123,7 @@ public class AppConfig implements WebMvcConfigurer {
         return new RestTemplate(httpRequestFactory);
     }
     @Bean
-    AuditorAware<UUID> auditorProvider() {
+    AuditorAware<String> auditorProvider() {
         return new AuditService();
     }
 }

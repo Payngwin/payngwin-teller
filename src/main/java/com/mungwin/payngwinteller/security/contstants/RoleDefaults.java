@@ -32,7 +32,7 @@ public class RoleDefaults {
 
     private static Role generate(String id, String name, List<String> authorities, String description) {
         Role role = new Role();
-        role.setId(UUID.fromString(id));
+        role.setId(id);
         role.setName(name);
         role.setAuthorities(authorities);
         role.setDescription(description);

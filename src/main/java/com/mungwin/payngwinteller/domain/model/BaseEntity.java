@@ -29,16 +29,16 @@ import java.util.UUID;
 public class BaseEntity {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
-    protected UUID id = UUID.randomUUID();
+    protected String id = UUID.randomUUID().toString().replaceAll("-", "");
     @XmlTransient
     @Version
     protected Integer version;
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

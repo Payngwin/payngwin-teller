@@ -14,7 +14,7 @@ public class App extends BaseEntityWithCreatorAudit {
     private String callbackUrl;
     private String email;
     private String password;
-    private UUID roleId;
+    private String roleId;
     private Long accountId;
 
     public String getName() {
@@ -57,11 +57,11 @@ public class App extends BaseEntityWithCreatorAudit {
         this.password = password;
     }
 
-    public UUID getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(UUID roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 

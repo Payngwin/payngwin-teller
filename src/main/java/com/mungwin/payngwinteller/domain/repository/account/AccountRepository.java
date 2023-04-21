@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findFirstByUserIdAndAccountType(UUID userId, String accountType);
-    List<Account> findAllByUserId(UUID userId);
-    Optional<Account> findFirstByIdAndUserId(Long id, UUID userId);
+    Optional<Account> findFirstByUserIdAndAccountType(String userId, String accountType);
+    List<Account> findAllByUserId(String userId);
+    Optional<Account> findFirstByIdAndUserId(Long id, String userId);
     List<Account> findAllByAccountType(String s);
 }

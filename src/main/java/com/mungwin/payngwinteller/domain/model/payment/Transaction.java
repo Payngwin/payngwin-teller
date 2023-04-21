@@ -28,7 +28,7 @@ public class Transaction extends BaseSerialEntity {
     private String initiatedBy;
     @Column(name = "confirmed_by")
     private String confirmedBy;
-    private UUID userId;
+    private String userId;
     private Instant createdAt;
     private Instant updatedAt;
     public static String generateCode() {
@@ -115,11 +115,11 @@ public class Transaction extends BaseSerialEntity {
         this.confirmedBy = confirmedBy;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

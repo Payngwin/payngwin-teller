@@ -27,7 +27,7 @@ public class UserProfile extends BaseEntity {
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private JsonBWrapper<Map<String, String>> documentLinks = new JsonBWrapper<>(new HashMap<>());
-    private UUID userId;
+    private String userId;
 
     public String getFirstName() {
         return firstName;
@@ -93,11 +93,11 @@ public class UserProfile extends BaseEntity {
         this.documentLinks = documentLinks;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

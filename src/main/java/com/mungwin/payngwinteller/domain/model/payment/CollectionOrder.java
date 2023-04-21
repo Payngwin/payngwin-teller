@@ -56,7 +56,7 @@ public class CollectionOrder extends BaseSerialEntity {
     @Column(name = "account_id")
     private Long accountId;
     @Column(name = "app_id")
-    private UUID appId;
+    private String appId;
 
     public String getToken() {
         return token;
@@ -258,11 +258,11 @@ public class CollectionOrder extends BaseSerialEntity {
         this.accountId = accountId;
     }
 
-    public UUID getAppId() {
+    public String getAppId() {
         return appId;
     }
 
-    public void setAppId(UUID appId) {
+    public void setAppId(String appId) {
         this.appId = appId;
     }
 

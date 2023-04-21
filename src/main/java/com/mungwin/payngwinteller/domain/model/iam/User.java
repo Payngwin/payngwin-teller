@@ -15,7 +15,7 @@ import java.util.UUID;
 public class User extends BaseEntityWithBasicAudit {
     private String email;
     private String password;
-    private UUID roleId;
+    private String roleId;
     @Column(name = "email_verified_at")
     private Instant emailVerifiedAt;
 
@@ -35,11 +35,11 @@ public class User extends BaseEntityWithBasicAudit {
         this.password = password;
     }
 
-    public UUID getRoleId() {
+    public String getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(UUID roleId) {
+    public void setRoleId(String roleId) {
         this.roleId = roleId;
     }
 

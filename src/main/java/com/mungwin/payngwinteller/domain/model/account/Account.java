@@ -18,7 +18,7 @@ public class Account extends BaseSerialEntity {
     private Boolean isClosed = false;
     private Boolean isWithdrawalOpen = false;
     private String accountType;
-    private UUID userId;
+    private String userId;
     private Instant createdAt;
     private Instant updatedAt;
     private String name;
@@ -74,11 +74,11 @@ public class Account extends BaseSerialEntity {
         this.accountType = accountType;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

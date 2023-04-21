@@ -18,8 +18,8 @@ public class AppTokenLog extends BaseSerialEntityWithBasicAudit {
     private String tag;
     private String method;
     private String queryString;
-    private UUID appId;
-    private UUID tokenId;
+    private String appId;
+    private String tokenId;
     @Column(name = "token_created_at")
     private Instant tokenCreatedAt;
 
@@ -71,19 +71,19 @@ public class AppTokenLog extends BaseSerialEntityWithBasicAudit {
         this.queryString = queryString;
     }
 
-    public UUID getAppId() {
+    public String getAppId() {
         return appId;
     }
 
-    public void setAppId(UUID appId) {
+    public void setAppId(String appId) {
         this.appId = appId;
     }
 
-    public UUID getTokenId() {
+    public String getTokenId() {
         return tokenId;
     }
 
-    public void setTokenId(UUID tokenId) {
+    public void setTokenId(String tokenId) {
         this.tokenId = tokenId;
     }
 
